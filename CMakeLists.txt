@@ -16,6 +16,8 @@ FetchContent_Declare(
 )
 FetchContent_MakeAvailable(PcapPlusPlus)
 
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
+
 file(GLOB SRCS src/*.cpp)
 
 add_executable(wire-shrimp ${SRCS})

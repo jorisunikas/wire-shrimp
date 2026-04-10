@@ -55,8 +55,6 @@ int main(int argc, char *argv[]) {
         printHelp(argv[0]);
         return 1;
     }
-
-
     
     Receiver receiver(config);
     receiver.start();
