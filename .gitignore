@@ -40,6 +40,10 @@
 # debug information files
 *.dwo
 
+# directories for CMake
 build/
-
 .cache/
+
+# macos
+.DS_Store
+
