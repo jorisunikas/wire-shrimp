@@ -16,7 +16,7 @@ class Parser {
      * @param len  Length of raw bytes buffer
      * @return ParsedPacket containing parsed headers
      */
-    ParsedPacket parse(const uint8_t *data, int len);
+    ParsedPacket parse(const uint8_t *data, size_t len);
 
   private:
     /**
