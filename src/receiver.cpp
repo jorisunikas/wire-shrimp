@@ -23,7 +23,7 @@ Receiver::Receiver(Config cfg) {
         return;
     }
 
-    cout << "Interface info:" << "\n" 
+    cout << "Interface found:" << "\n" 
 	     << "   Interface name:        " << device->getName() << "\n"
 	     << "   Interface description: " << device->getDesc() << "\n"
          << "   MAC address:           " << device->getMacAddress() << "\n" 
@@ -53,9 +53,8 @@ void Receiver::start() {
 
     // Start asynchronous capture; passing 'this' allows the static callback to access our instance
     device->startCapture(Receiver::onPacketArrives, this);
-    while(isRunning){
-        this_thread::sleep_for(chrono::milliseconds(100));
-    }
+    this_thread::sleep_for(chrono::seconds(10));
+    device->stopCapture();
 }
 
 void Receiver::stop() {
@@ -74,10 +73,12 @@ void Receiver::onPacket(pcpp::RawPacket* rawPacket) {
     cout << "Captured packet #" << currentPacketCount << " (" << rawPacket->getRawDataLen() << " bytes)" << endl;
 
     // Limit check
+    /*
     if (config.count > 0 && currentPacketCount >= config.count) {
         cout << "Reached target packet count: " << config.count << endl;
         stop();
     }
+    */
 }
 
 // Static bridge to the onPacket member function
