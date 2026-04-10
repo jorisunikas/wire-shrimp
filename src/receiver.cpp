@@ -38,12 +38,14 @@ void Receiver::start() {
     }
 
     // Apply the BPF filter from config
+    /*
     if (!config.filter.empty()) {
         if (!device->setFilter(config.filter)) {
             cerr << "Error: Invalid filter: " << config.filter << endl;
             return;
         }
     }
+    */
 
     cout << "Starting capture on " << device->getName() << "..." << endl;
     isRunning = true;
@@ -51,6 +53,9 @@ void Receiver::start() {
 
     // Start asynchronous capture; passing 'this' allows the static callback to access our instance
     device->startCapture(Receiver::onPacketArrives, this);
+    while(isRunning){
+        this_thread::sleep_for(chrono::milliseconds(100));
+    }
 }
 
 void Receiver::stop() {
