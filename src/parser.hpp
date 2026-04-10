@@ -19,8 +19,24 @@ class Parser {
     ParsedPacket parse(const uint8_t *data, int len);
 
   private:
-    EthernetHeader parseEthernet(const uint8_t *data, int offset);
-    IPv4Header parseIPv4(const uint8_t *data, int offset);
-    TCPHeader parseTCP(const uint8_t *data, int offset);
-    UDPHeader parseUDP(const uint8_t *data, int offset);
+    /**
+     * Parses first 14 bytes into EthernetHeader
+     * @param data Byte buffer with offset 0
+     */
+    EthernetHeader parseEthernet(const uint8_t *data);
+    /**
+     * Parse IPv4 header
+     * @param data Byte buffer offset by 14
+     */
+    IPv4Header parseIPv4(const uint8_t *data);
+    /*
+     * Parse TCP header
+     * @param data Byte buffer offset by (14 + 4 * ihl)
+     */
+    TCPHeader parseTCP(const uint8_t *data);
+    /*
+     * Parse UDP header
+     * @param data Byte buffer offset by (14 + 4 * ihl)
+     */
+    UDPHeader parseUDP(const uint8_t *data);
 };
