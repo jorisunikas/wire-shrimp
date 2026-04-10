@@ -1,4 +1,6 @@
 #include "config.hpp"
+#include "receiver.hpp"
+
 #include "getopt.h"
 #include <getopt.h>
 #include <iostream>
@@ -54,10 +56,10 @@ int main(int argc, char *argv[]) {
         return 1;
     }
 
-    /*
-    Capture capture(config);
-    capture.start();
-    */
+
+    
+    Receiver receiver(config);
+    receiver.start();
 
     return 0;
 }
