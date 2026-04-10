@@ -1,0 +1,93 @@
+@startuml
+
+struct Config {
+  + interface: string
+  + filter: string
+  + packetCount: int
+}
+
+class Capture {
+  - device: PcapLiveDevice*
+  - config: Config
+  - parser: Parser
+  - printer: Printer
+  + Capture(config: Config)
+  + start(): void
+  + stop(): void
+  - onPacket(rawPacket: RawPacket*): void
+}
+
+class Parser {
+  + parse(data: byte[], len: int): ParsedPacket
+  - parseEthernet(data: byte[]): EthernetHeader
+  - parseIPv4(data: byte[]): IPv4Header
+  - parseTCP(data: byte[]): TCPHeader
+  - parseUDP(data: byte[]): UDPHeader
+}
+
+struct EthernetHeader {
+  + srcMac: string
+  + dstMac: string
+  + etherType: uint16_t
+}
+
+struct IPv4Header {
+  + srcIp: string
+  + dstIp: string
+  + protocol: uint8_t
+  + ttl: uint8_t
+  + ihl: uint8_t
+}
+
+struct TCPHeader {
+  + srcPort: uint16_t
+  + dstPort: uint16_t
+  + flags: uint8_t
+}
+
+struct UDPHeader {
+  + srcPort: uint16_t
+  + dstPort: uint16_t
+}
+
+struct ParsedPacket {
+  + eth: EthernetHeader
+  + ip: IPv4Header
+  + tcp: TCPHeader
+  + udp: UDPHeader
+  + protocol: string
+}
+
+class Printer {
+  + print(packet: ParsedPacket): void
+  - formatFlags(flags: uint8_t): string
+}
+
+package "PcapPlusPlus" {
+  class PcapLiveDevice {
+    + open(): bool
+    + setFilter(filter: string): bool
+    + startCapture(callback): void
+    + stopCapture(): void
+    + close(): void
+  }
+
+  class RawPacket {
+    + getRawData(): u_char*
+    + getRawDataLen(): int
+  }
+}
+
+Config --> Capture : setup parameters
+Capture --> PcapLiveDevice : uses for capture
+PcapLiveDevice --> RawPacket : produces
+Capture --> RawPacket : receives via callback
+Capture --> Parser : passes raw bytes
+Capture --> Printer : uses
+Parser --> ParsedPacket : produces
+ParsedPacket *-- EthernetHeader
+ParsedPacket *-- IPv4Header
+ParsedPacket *-- TCPHeader
+ParsedPacket *-- UDPHeader
+Printer --> ParsedPacket : consumes
+@enduml
