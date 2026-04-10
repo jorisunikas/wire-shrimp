@@ -2,17 +2,11 @@
 
 using namespace std;
 
-Receiver::Receiver() 
-    : device(nullptr), currentPacketCount(0), isRunning(false) {
-    // Initializing config with default values
-    config = {"", "", 0};
-}
-
 Receiver::~Receiver() {
     stop();
 }
 
-void Receiver::Capture(Config cfg) {
+Receiver::Receiver(Config cfg) {
     config = cfg;
     
     // Find the device by IP or Name using the config string
@@ -26,7 +20,15 @@ void Receiver::Capture(Config cfg) {
 
     if (!device->open()) {
         cerr << "Error: Could not open device." << endl;
+        return;
     }
+
+    cout << "Interface info:" << "\n" 
+	     << "   Interface name:        " << device->getName() << "\n"
+	     << "   Interface description: " << device->getDesc() << "\n"
+         << "   MAC address:           " << device->getMacAddress() << "\n" 
+	     << "   Default gateway:       " << device->getDefaultGateway() << "\n"
+	     << "   Interface MTU:         " << device->getMtu() << "\n";
 }
 
 void Receiver::start() {

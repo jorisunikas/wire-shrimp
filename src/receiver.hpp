@@ -19,11 +19,10 @@ private:
     static void onPacketArrives(pcpp::RawPacket* packet, pcpp::PcapLiveDevice* dev, void* cookie);
 
 public:
-    Receiver();
+    Receiver(Config cfg);
     ~Receiver();
 
     // Methods
-    void Capture(Config cfg);
     void start();
     void stop();
     void onPacket(pcpp::RawPacket* packet);
