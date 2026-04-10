@@ -13,7 +13,7 @@ private:
     Config config;
     pcpp::PcapLiveDevice* device;
     int currentPacketCount;
-    bool isRunning;
+    bool active;
 
     // Static callback for PcapPlusPlus
     static void onPacketArrives(pcpp::RawPacket* packet, pcpp::PcapLiveDevice* dev, void* cookie);
