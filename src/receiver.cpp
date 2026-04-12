@@ -1,23 +1,21 @@
 #include "receiver.hpp"
-
 using namespace std;
 
+#include "parser.hpp"
 
 // --- CONSTRUCTOR / DESTRUCTOR ---
 
-Receiver::Receiver(Config cfg) {
+Receiver::Receiver(Config cfg){
     config = cfg;
     
-    // Find the device by IP or Name using the config string
-    // find the interface by IP address
     device = pcpp::PcapLiveDeviceList::getInstance().getDeviceByIpOrName(config.interface);
     
     if (device == nullptr) {
-        cerr << "Error: Interface '" << config.interface << "' not found." << endl;
+        cerr << "Error: Interface '" << config.interface << "' not found." << "\n";
         return;
     }
     if (!device->open()) {
-        cerr << "Error: Could not open device." << endl;
+        cerr << "Error: Could not open device." << "\n";
         return;
     }
 
@@ -37,13 +35,12 @@ Receiver::~Receiver(){
 
 void Receiver::start() {
     if (device == nullptr || !device->isOpened()) {
-        cerr << "Error: Device not initialized. Call Capture() first." << endl;
+        cerr << "Error: Device not initialized. Call Capture() first." << "\n";
         return;
     }
 
-    cout << "Starting capture on " << device->getName() << "..." << endl;
+    cout << "Starting capture on " << device->getName() << "..." << "\n";
 
-    // Start asynchronous capture; passing 'this' allows the static callback to access our instance
     currentPacketCount = 0;
     active = true;
     device->startCapture(Receiver::onPacketArrives, this);
@@ -56,13 +53,12 @@ void Receiver::start() {
 void Receiver::stop() {
     if (device != nullptr) {
         device->stopCapture();
-        cout << "Capture stopped." << endl;
+        cout << "Capture stopped." << "\n";
     }
 }
 
 // --- PACKET EVENTS ---
 
-// Static bridge to the onPacket member function
 void Receiver::onPacketArrives(pcpp::RawPacket* packet, pcpp::PcapLiveDevice* dev, void* cookie) {
     Receiver* instance = static_cast<Receiver*>(cookie);
     if (instance) {
@@ -73,15 +69,16 @@ void Receiver::onPacketArrives(pcpp::RawPacket* packet, pcpp::PcapLiveDevice* de
 void Receiver::onPacket(pcpp::RawPacket* rawPacket) {
     if (!active) return;
 
-    currentPacketCount++;
+    cout << "Packet #" << currentPacketCount << " (" << rawPacket->getRawDataLen() << " bytes)" << "\n";
     
-    // Simple logic: print packet length
-    cout << "Captured packet #" << currentPacketCount << " (" << rawPacket->getRawDataLen() << " bytes)" << endl;
+    ParsedPacket pp =  Parser::parse(rawPacket->getRawData(), rawPacket->getRawDataLen());
+    cout << "Packet protocol: " << pp.protocol << "\n"; 
 
     // Limit check
+    currentPacketCount++;
     if (config.count > 0 && currentPacketCount >= config.count) {
         active = false;
-        cout << "Reached target packet count: " << config.count << endl;
+        cout << "Reached target packet count: " << config.count << "\n";
     }
 }
 

@@ -12,6 +12,7 @@ private:
     // Fields
     Config config;
     pcpp::PcapLiveDevice* device;
+    
     int currentPacketCount;
     bool active;
 
@@ -20,6 +21,7 @@ private:
 
 public:
     Receiver(Config cfg);
+    Receiver(Config cfg, vector<pcpp::RawPacket*> &rawArray);
     ~Receiver();
 
     // Methods

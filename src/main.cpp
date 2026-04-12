@@ -1,10 +1,11 @@
 #include "config.hpp"
+#include "packet.hpp"
 #include "receiver.hpp"
 
-#include "getopt.h"
 #include <getopt.h>
 #include <iostream>
 #include <string>
+#include <vector>
 
 void printHelp(const char *name) {
     std::cout << "Usage:\n" << name << " [OPTIONS]\n";
@@ -55,6 +56,7 @@ int main(int argc, char *argv[]) {
         printHelp(argv[0]);
         return 1;
     }
+    
     
     Receiver receiver(config);
     receiver.start();
