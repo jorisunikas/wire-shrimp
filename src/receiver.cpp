@@ -2,6 +2,7 @@
 using namespace std;
 
 #include "parser.hpp"
+#include "printer.hpp"
 
 // --- CONSTRUCTOR / DESTRUCTOR ---
 
@@ -19,12 +20,7 @@ Receiver::Receiver(Config cfg){
         return;
     }
 
-    cout << "Interface found:" << "\n" 
-	     << "   Interface name:  " << device->getName() << "\n"
-	     << "   IPv4 address:    " << device->getIPv4Address() << "\n"
-         << "   MAC address:     " << device->getMacAddress() << "\n" 
-	     << "   Default gateway: " << device->getDefaultGateway() << "\n"
-	     << "   Interface MTU:   " << device->getMtu() << "\n";
+    Printer::printInterface(device);
 }
 
 Receiver::~Receiver(){
@@ -69,10 +65,10 @@ void Receiver::onPacketArrives(pcpp::RawPacket* packet, pcpp::PcapLiveDevice* de
 void Receiver::onPacket(pcpp::RawPacket* rawPacket) {
     if (!active) return;
 
-    cout << "Packet #" << currentPacketCount << " (" << rawPacket->getRawDataLen() << " bytes)" << "\n";
+    cout << "Found Packet #" << currentPacketCount << "\n";
     
     ParsedPacket pp =  Parser::parse(rawPacket->getRawData(), rawPacket->getRawDataLen());
-    cout << "Packet protocol: " << pp.protocol << "\n"; 
+    Printer::printPacket(pp);
 
     // Limit check
     currentPacketCount++;
