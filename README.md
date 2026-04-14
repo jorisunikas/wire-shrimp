@@ -1,4 +1,26 @@
 # wire-shrimp
+`wire-shrimp` is a simple command-line tool designed for quick network packet capture and analysis. By simply passing your target interface (`-i`) and packet count (`-n`), it outputs your current interface diagnostics and sniffs the network to provide readable, parsed packet data—including protocols, IPv4 addresses, and payload information.
+
+## Features
+
+ - Command-line interface for low-overhead packet sniffing.
+
+ - Select specific network interfaces to monitor (-i).
+
+ - Limit the number of packets captured per session (-n).
+
+ - Displays configuration details for the selected network interface.
+
+ - Parses raw packets to output IPv4 addresses, protocols (TCP, UDP, ICMP), and basic payload data.
+
+## Prerequisites
+
+An installed version of 
+
+ - [PcapPlusPlus](https://pcapplusplus.github.io/)
+ - [CMake](https://cmake.org/)
+
+is required for building and running. 
 
 ## Building
 
@@ -10,7 +32,7 @@ Then executable will subesquently be found in `/build/wire-shrimp`
 
 ## Diagrams
 
-### Class diagram
+### Classes
 
 ```mermaid
 classDiagram
