@@ -13,7 +13,9 @@
 ## Building
 
 *Requirements*: [CMake](https://cmake.org/)
-PcapPlusPlus library is automatically downloaded upon first `make` call.
+
+> [!NOTE] 
+> PcapPlusPlus library is automatically downloaded upon first `make` call.
 
 To run the project (from project root):
 
