@@ -125,3 +125,6 @@ flowchart TD
     P3 -- "Collected Raw Packets" --> P4
     P4 -- "Parsed Packet Info\n(Protocol, IPv4, etc.)" --> User
 ```
+
+### Activity
+<img src="uml/uml_activity.png"/>
