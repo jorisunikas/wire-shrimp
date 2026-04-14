@@ -10,7 +10,7 @@ Then executable will subesquently be found in `/build/wire-shrimp`
 
 ## Diagrams
 
-### Activity
+### Class diagram
 
 ```mermaid
 classDiagram
