@@ -1,0 +1,43 @@
+@startuml
+title Packet Analyzer - Activity Diagram
+
+start
+
+:Parse CLI arguments;
+
+if (interface provided?) then (yes)
+else (no)
+  :Print error and usage;
+  stop
+endif
+
+:Initialize Receiver;
+
+if (device found?) then (yes)
+else (no)
+  :Print error;
+  stop
+endif
+
+if (device opened?) then (yes)
+else (no)
+  :Print error;
+  stop
+endif
+
+:Print interface info;
+:Start capture;
+
+repeat
+  while (packet arrives?) is (no)
+  endwhile (yes)
+  :Parse packet;
+  :Print packet;
+  :Increment count;
+repeat while (count < limit?) is (yes)
+->no;
+
+:Stop capture;
+
+stop
+@enduml

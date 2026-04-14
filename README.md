@@ -10,6 +10,8 @@ Then executable will subesquently be found in `/build/wire-shrimp`
 
 ## Diagrams
 
+Class diagram:
+
 ```mermaid
 classDiagram
     class Config {
@@ -95,3 +97,7 @@ classDiagram
     Receiver ..> Parser : uses
     Receiver ..> Printer : uses
 ```
+
+Activity diagram:
+
+![Activity diagram](uml/activity_uml.png)
