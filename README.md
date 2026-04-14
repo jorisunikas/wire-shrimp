@@ -14,9 +14,6 @@
 
 *Requirements*: [CMake](https://cmake.org/)
 
-> [!NOTE] 
-> PcapPlusPlus library is automatically downloaded upon first `make` call.
-
 To run the project (from project root):
 
 `$ make`
@@ -28,6 +25,8 @@ Then executable will subsequently be found in `/build/wire-shrimp`. To run:
 > [!NOTE]
 > Super-user privileges are required to access a network interface.
 
+> [!NOTE] 
+> PcapPlusPlus library is automatically downloaded upon first `make` call.
 
 ## Diagrams
 
