@@ -100,4 +100,4 @@ classDiagram
 
 Activity diagram:
 
-![Activity diagram](uml/activity_uml.png)
+![Activity diagram](uml/uml_activity.png)
