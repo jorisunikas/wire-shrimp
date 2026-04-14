@@ -1,4 +1,4 @@
-# wire-shrimp
+# wire-shrimp 📡🦐
 `wire-shrimp` is a simple command-line tool designed for quick network packet capture and analysis. By simply passing your target interface (`-i`) and packet count (`-n`), it outputs your current interface diagnostics and sniffs the network to provide readable, parsed packet data—including protocols, IPv4 addresses, and payload information.
 
 ## Features
