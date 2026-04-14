@@ -1,34 +1,30 @@
-# wire-shrimp 📡🦐
-`wire-shrimp` is a simple command-line tool designed for quick network packet capture and analysis. By simply passing your target interface (`-i`) and packet count (`-n`), it outputs your current interface diagnostics and sniffs the network to provide readable, parsed packet data—including protocols, IPv4 addresses, and payload information.
+# wire-shrimp
+
+`wire-shrimp` is a WIP simple command-line tool designed for quick network packet capture and analysis. 
 
 ## Features
 
- - Command-line interface for low-overhead packet sniffing.
-
- - Select specific network interfaces to monitor (-i).
-
- - Limit the number of packets captured per session (-n).
-
+ - Ability to select specific network interfaces to monitor (-i).
+ - Ability to limit the number of packets captured per session (-n).
  - Displays configuration details for the selected network interface.
-
- - Parses raw packets to output IPv4 addresses, protocols (TCP, UDP, ICMP), and basic payload data.
-
-## Prerequisites
-
-An installed version of 
-
- - [PcapPlusPlus](https://pcapplusplus.github.io/)
- - [CMake](https://cmake.org/)
-
-is required for building and running. 
+ - Parses raw packets to output information stored in Ethernet, IPv4, TCP and UDP headers.
+ - Uses PcapPlusPlus library for compatibility.
 
 ## Building
 
-To run the project:
+*Requirements* [CMake](https://cmake.org/) for building. PcapPlusPlus library is automatically downloaded upon first `make` call.
 
-`$ make && ./build/wire-shrimp`
+To run the project (from project root):
 
-Then executable will subesquently be found in `/build/wire-shrimp`
+`$ make`
+
+Then executable will subsequently be found in `/build/wire-shrimp`. To run:
+
+`$ sudo ./build/wire-shrimp`
+
+> [!NOTE]
+> Super-user privileges are required to access a network interface.
+
 
 ## Diagrams
 
@@ -150,3 +146,14 @@ flowchart TD
 
 ### Activity
 <img src="uml/uml_activity.png"/>
+
+## Roadmap
+
+- Parsing IPv4 packet data (HTTPS, DNS etc.).
+- Support for IPv6 protocol.
+
+## Resources
+
+- [PcapPlusPlus](https://github.com/seladb/PcapPlusPlus)
+- [PlantUML](https://plantuml.com/)
+- [Mermaid](https://mermaid.js.org/)
