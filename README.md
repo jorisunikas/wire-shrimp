@@ -10,7 +10,7 @@ Then executable will subesquently be found in `/build/wire-shrimp`
 
 ## Diagrams
 
-Class diagram:
+### Activity
 
 ```mermaid
 classDiagram
@@ -98,6 +98,30 @@ classDiagram
     Receiver ..> Printer : uses
 ```
 
-Activity diagram:
+### Data flow
 
-![Activity diagram](uml/uml_activity.png)
+```mermaid
+flowchart TD
+    %% External Entities (Rectangles)
+    User[User / CLI]
+    Network[Network / Selected Interface]
+
+    %% Processes (Circles/Rounded)
+    P1((Parse Arguments))
+    P2((Retrieve Interface Info))
+    P3((Capture Packets))
+    P4((Analyze Packets))
+
+    %% Data Flows (Arrows)
+    User -- "Command: wire-shrimp -n 100 -i <interface>" --> P1
+    
+    P1 -- "Interface Target" --> P2
+    P2 -- "Interface Details" --> User
+    
+    P1 -- "Parameters: Count (100) & Interface" --> P3
+    P3 -- "Listen/Sniff Request" --> Network
+    Network -- "Raw Packets" --> P3
+    
+    P3 -- "Collected Raw Packets" --> P4
+    P4 -- "Parsed Packet Info\n(Protocol, IPv4, etc.)" --> User
+```
