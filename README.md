@@ -12,7 +12,10 @@
 
 ## Building
 
-*Requirements*: [CMake](https://cmake.org/)
+*Requirements*:
+
+ - [CMake](https://cmake.org/)
+ - [libpcap](https://www.tcpdump.org/)
 
 To run the project (from project root):
 
