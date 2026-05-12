@@ -1,7 +1,7 @@
-#include "receiver.hpp"
 using namespace std;
 
-#include "parser.hpp"
+#include "receiver.hpp"
+#include "parser/parser.hpp"
 #include "printer.hpp"
 
 // --- CONSTRUCTOR / DESTRUCTOR ---
@@ -67,7 +67,7 @@ void Receiver::onPacket(pcpp::RawPacket* rawPacket) {
 
     cout << "Found Packet #" << currentPacketCount << "\n";
     
-    ParsedPacket pp =  Parser::parse(rawPacket->getRawData(), rawPacket->getRawDataLen());
+    ParsedPacket pp =  Parser::parse(rawPacket->getRawData(), static_cast<size_t>(rawPacket->getRawDataLen()));
     Printer::printPacket(pp);
 
     // Limit check

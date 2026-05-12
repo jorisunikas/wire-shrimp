@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.15)
-project(wire-dolphin)
+project(wire-shrimp)
 
 if(CMAKE_SOURCE_DIR STREQUAL CMAKE_BINARY_DIR)
   message(FATAL_ERROR "In-source builds not allowed. Use a build/ directory.")
@@ -18,18 +18,11 @@ FetchContent_MakeAvailable(PcapPlusPlus)
 
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
-file(GLOB SRCS src/*.cpp)
+file(GLOB_RECURSE SRCS "src/*.cpp")
 
 add_executable(wire-shrimp ${SRCS})
 
-target_include_directories(wire-shrimp PRIVATE src)
-
-target_link_libraries(wire-shrimp
-  PRIVATE
-    Pcap++
-    Packet++
-    Common++
-)
+target_link_libraries(wire-shrimp PRIVATE Pcap++ Packet++ Common++)
 
 add_executable(tests tests/test_hello_world.cpp)
 target_include_directories(tests PRIVATE src tests)
