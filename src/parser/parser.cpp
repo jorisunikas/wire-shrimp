@@ -4,21 +4,23 @@
 #include <cstddef>
 #include <cstdint>
 
+using namespace std;
+
 static constexpr uint8_t ETHERNET_HEADER_SIZE = 14;
 static constexpr uint8_t IPV4_MIN_HEADER_SIZE = 20;
 
 // Static strategy instances
-std::unique_ptr<EthernetStrategy> Parser::ethernetStrategy = nullptr;
-std::unique_ptr<IPv4Strategy> Parser::ipv4Strategy = nullptr;
-std::unique_ptr<TCPStrategy> Parser::tcpStrategy = nullptr;
-std::unique_ptr<UDPStrategy> Parser::udpStrategy = nullptr;
+unique_ptr<EthernetStrategy> Parser::ethernetStrategy = nullptr;
+unique_ptr<IPv4Strategy> Parser::ipv4Strategy = nullptr;
+unique_ptr<TCPStrategy> Parser::tcpStrategy = nullptr;
+unique_ptr<UDPStrategy> Parser::udpStrategy = nullptr;
 
 void Parser::initializeStrategies() {
     if (ethernetStrategy == nullptr) {
-        ethernetStrategy = std::make_unique<EthernetStrategy>();
-        ipv4Strategy = std::make_unique<IPv4Strategy>();
-        tcpStrategy = std::make_unique<TCPStrategy>();
-        udpStrategy = std::make_unique<UDPStrategy>();
+        ethernetStrategy = make_unique<EthernetStrategy>();
+        ipv4Strategy = make_unique<IPv4Strategy>();
+        tcpStrategy = make_unique<TCPStrategy>();
+        udpStrategy = make_unique<UDPStrategy>();
     }
 }
 
