@@ -152,6 +152,10 @@ flowchart TD
 ### Activity
 <img src="uml/uml_activity.png"/>
 
+## Grading
+
+- P1: 2,3
+
 ## Roadmap
 
 - Parsing IPv4 packet data (HTTPS, DNS etc.).
