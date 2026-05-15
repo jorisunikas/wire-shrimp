@@ -1,7 +1,8 @@
 #pragma once
 
 #include "protocol_parser.hpp"
-#include "../headers.hpp"
+#include "../data_types/headers.hpp"
+#include "../data_types/packet.hpp"
 #include <cstdint>
 #include <cstddef>
 #include <optional>
@@ -11,27 +12,19 @@
  * Extracts source/destination IPs, TTL, protocol, and IHL.
  */
 class IPv4Parser : public ProtocolParser {
-private:
-    IPv4Header header;
-
 public:
     /**
      * Parse IPv4 header (starts at offset 14 bytes from packet start)
-     * @param data Pointer to raw bytes at offset 14
-     * @param len Length of remaining buffer
-     * @return true if parsing succeeded
+     * @param rp Raw packet containing the IPv4 header
+     * @return Pointer to parsed IPv4Header
      */
-    bool parse(const uint8_t *data, size_t len) override;
-    
+    IPv4Header* parse(RawPacket rp) override;
+
     /**
-     * Get parsed IPv4 header
-     * @return Parsed IPv4Header
+     * Validate if the packet contains a valid IPv4 header
+     * Checks minimum length and version field
+     * @param rp Raw packet containing the IPv4 header
+     * @return true if valid IPv4 header is present
      */
-    IPv4Header getHeader() const;
-    
-    /**
-     * Get size of this IPv4 header in bytes
-     * @return Header size (typically 20 bytes)
-     */
-    uint8_t getHeaderSize() const;
+    bool isValid(RawPacket rp) override;    
 };

@@ -1,6 +1,6 @@
 #pragma once
 
-#include "packet.hpp"
+#include "data_types/packet.hpp"
 #include <string>
 #include <PcapLiveDevice.h>
 

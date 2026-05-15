@@ -1,98 +1,94 @@
 #include "parser.hpp"
-#include "../headers.hpp"
-#include "../packet.hpp"
+#include "../data_types/headers.hpp"
+#include "../data_types/packet.hpp"
 #include <cstddef>
 #include <cstdint>
 
 using namespace std;
-
-static constexpr uint8_t ETHERNET_HEADER_SIZE = 14;
-static constexpr uint8_t IPV4_MIN_HEADER_SIZE = 20;
 
 // Static parser instances
 unique_ptr<EthernetParser> Parser::ethernetParser = nullptr;
 unique_ptr<IPv4Parser> Parser::ipv4Parser = nullptr;
 unique_ptr<TCPParser> Parser::tcpParser = nullptr;
 unique_ptr<UDPParser> Parser::udpParser = nullptr;
+unique_ptr<HTTPParser> Parser::httpParser = nullptr;
 
 void Parser::initializeParsers() {
     if (ethernetParser == nullptr) {
+        // L2
         ethernetParser = make_unique<EthernetParser>();
+        // L3
         ipv4Parser = make_unique<IPv4Parser>();
+        // L4
         tcpParser = make_unique<TCPParser>();
         udpParser = make_unique<UDPParser>();
+        httpParser = make_unique<HTTPParser>();
     }
 }
 
-ParsedPacket Parser::parse(const uint8_t *data, size_t len) {
+ParsedPacket Parser::parse(RawPacket rp) {
     ParsedPacket pp;
     int offset = 0;
 
     // Initialize parsers on first use
     initializeParsers();
 
-    /*
-     * Parse Ethernet header (first 14 bytes)
-     * If packet is less than min length, then it is invalid
-     */
-    if (!ethernetParser->parse(data, len)) {
-        return pp;
+    // ===== LAYER 2: ETHERNET =====
+    if (ethernetParser->isValid(rp)) {
+        pp.valid = true;
+        pp.ethData = *ethernetParser->parse(rp);
     }
-    pp.eth = ethernetParser->getHeader();
-    offset += ETHERNET_HEADER_SIZE;
-
-    /*
-     * Determine protocol type from EtherType field
-     * If packets are IPv6 or ARP, return them without parsing inner headers
-     */
-    if (pp.eth.etherType == 0x86DD) {
-        pp.valid = true;
-        pp.protocol = "IPv6";
-        return pp;
-    } else if (pp.eth.etherType == 0x0806) {
-        pp.valid = true;
-        pp.protocol = "ARP";
-        return pp;
-    } else if (pp.eth.etherType != 0x0800) {
-        pp.protocol = "Other";
-        pp.valid = true;
-        return pp;
+    else{
+        pp.valid = false;
+        return pp; // Invalid packet (too short for Ethernet header)
     }
 
-    pp.protocol = "IPv4";
-    pp.valid = true;
+    // ===== LAYER 3: IPv4 =====
 
-    /*
-     * Parse IPv4 header
-     * If packet is less than min length, then it is invalid.
-     * EthernetHeader + IPv4Header = 34 bytes
-     */
-    if (!ipv4Parser->parse(data + offset, len - offset)) {
-        return pp;
+    if (ipv4Parser->isValid(rp)) {
+        pp.IPv4Data = *ipv4Parser->parse(rp);
+    } else {
+        return pp; // Not IPv4, stop parsing further
     }
-    pp.ip = ipv4Parser->getHeader();
-    offset += ipv4Parser->getHeaderSize();
 
+    // ===== LAYER 4: TCP/UDP =====
+    
     /*
      * Parse transport layer based on IPv4 protocol field
      * 1 = ICMP, 6 = TCP, 17 = UDP
      */
-    if (pp.ip->protocol == 6) {
-        // TCP
-        if (tcpParser->parse(data + offset, len - offset)) {
-            pp.tcp = tcpParser->getHeader();
+    
+    // TCP
+    if (pp.IPv4Data->protocol == 6) {
+        
+        if (tcpParser->isValid(rp)) {
+            pp.tcpData = *tcpParser->parse(rp);
             pp.protocol.append(" TCP");
         }
-    } else if (pp.ip->protocol == 17) {
-        // UDP
-        if (udpParser->parse(data + offset, len - offset)) {
-            pp.udp = udpParser->getHeader();
+
+        // HTTP
+        if (pp.tcpData->srcPort == 80 || pp.tcpData->dstPort == 80) {
+            if (httpParser->isValid(rp)) {
+                pp.protocol.append(" HTTP");
+                pp.httpData = *httpParser->parse(rp);
+            }
+        }
+    } 
+    // UDP
+    else if (pp.IPv4Data->protocol == 17) {
+        if (udpParser->isValid(rp)) {
+            pp.udpData = *udpParser->parse(rp);
             pp.protocol.append(" UDP");
         }
-    } else if (pp.ip->protocol == 1) {
-        // ICMP (no parsing implemented)
+    } 
+    // ICMP (no parsing implemented)
+    else if (pp.IPv4Data->protocol == 1) {
+        
         pp.protocol.append(" ICMP");
     }
 
+    // ===== LAYER 6: HTTP/HTTPS/DNS =====
+
+    
     return pp;
 }

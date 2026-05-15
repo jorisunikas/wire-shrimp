@@ -3,7 +3,7 @@
 #include <PcapLiveDeviceList.h>
 #include <PcapLiveDevice.h>
 #include <PcapFilter.h>
-#include "config.hpp"
+#include "data_types/config.hpp"
 
 using namespace std;
 

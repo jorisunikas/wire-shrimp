@@ -5,6 +5,13 @@
 using namespace std;
 
 void Printer::printPacket(ParsedPacket packet) {
+    // Only print HTTP packets for now
+    /*
+    if(packet.protocol.find("HTTP") == string::npos) {
+        return;
+    }
+    */
+
     if (!packet.valid) {
         cout << "[-] Invalid or malformed packet captured.\n";
         cout << "--------------------------------------------------\n";
@@ -13,21 +20,24 @@ void Printer::printPacket(ParsedPacket packet) {
 
     cout << "[+] Packet Captured | Protocol: " << packet.protocol << "\n";
 
-    cout << "    [ETH]  " << packet.eth.srcMac << " -> " << packet.eth.dstMac 
-         << " (Type: 0x" << hex << setfill('0') << setw(4) << packet.eth.etherType << dec << ")\n";
+    cout << "    [ETH]  " << packet.ethData.srcMac << " -> " << packet.ethData.dstMac 
+         << " (Type: 0x" << hex << setfill('0') << setw(4) << packet.ethData.etherType << dec << ")\n";
 
-    if (packet.ip.has_value()) {
-        cout << "    [IPv4] " << packet.ip->srcIp << " -> " << packet.ip->dstIp 
-             << " (TTL: " << (int)packet.ip->ttl << ")\n";
+    if (packet.IPv4Data.has_value()) {
+        cout << "    [IPv4] " << packet.IPv4Data->srcIp << " -> " << packet.IPv4Data->dstIp 
+             << " (TTL: " << (int)packet.IPv4Data->ttl << ")\n";
     }
 
-    if (packet.tcp.has_value()) {
-        cout << "    [TCP]  Port " << packet.tcp->srcPort << " -> " << packet.tcp->dstPort 
-             << " (Flags: 0x" << hex << (int)packet.tcp->flags << dec << ")\n" <<
-                "           Host: " << (packet.tcp->hostname != "" ? packet.tcp->hostname : "N/A") << "\n";
+    if (packet.tcpData.has_value()) {
+        cout << "    [TCP]  Port " << packet.tcpData->srcPort << " -> " << packet.tcpData->dstPort 
+             << " (Flags: 0x" << hex << (int)packet.tcpData->flags << dec << ")\n";   
+        if (packet.protocol.find("HTTP") != string::npos) {
+            // Print HTTP details
+            //cout << "    [HTTP]" << " " << packet.httpData->details << "\n";
+        };
     } 
-    else if (packet.udp.has_value()) {
-        cout << "    [UDP]  Port " << packet.udp->srcPort << " -> " << packet.udp->dstPort << "\n";
+    else if (packet.udpData.has_value()) {
+        cout << "    [UDP]  Port " << packet.udpData->srcPort << " -> " << packet.udpData->dstPort << "\n";
     }
 
     cout << "--------------------------------------------------\n";

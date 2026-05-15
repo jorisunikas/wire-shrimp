@@ -65,9 +65,12 @@ void Receiver::onPacketArrives(pcpp::RawPacket* packet, pcpp::PcapLiveDevice* de
 void Receiver::onPacket(pcpp::RawPacket* rawPacket) {
     if (!active) return;
 
-    cout << "Found Packet #" << currentPacketCount << "\n";
+    //cout << "Found Packet #" << currentPacketCount << "\n";
     
-    ParsedPacket pp =  Parser::parse(rawPacket->getRawData(), static_cast<size_t>(rawPacket->getRawDataLen()));
+    ParsedPacket pp =  Parser::parse({
+        rawPacket->getRawData(),
+        static_cast<size_t>(rawPacket->getRawDataLen())
+    });
     Printer::printPacket(pp);
 
     // Limit check

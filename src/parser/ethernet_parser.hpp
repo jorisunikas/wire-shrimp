@@ -1,7 +1,8 @@
 #pragma once
 
 #include "protocol_parser.hpp"
-#include "../headers.hpp"
+#include "../data_types/headers.hpp"
+#include "../data_types/packet.hpp"
 #include <cstdint>
 #include <cstddef>
 
@@ -10,21 +11,18 @@
  * Extracts source/destination MAC addresses and EtherType.
  */
 class EthernetParser : public ProtocolParser {
-private:
-    EthernetHeader header;
-
 public:
     /**
      * Parse Ethernet header (first 14 bytes of packet)
-     * @param data Pointer to raw bytes at offset 0
-     * @param len Length of buffer
-     * @return true if parsing succeeded
-     */
-    bool parse(const uint8_t *data, size_t len) override;
-    
-    /**
-     * Get parsed Ethernet header
+     * @param rp RawPacket to parse
      * @return Parsed EthernetHeader
      */
-    EthernetHeader getHeader() const;
+    EthernetHeader* parse(RawPacket rp) override;
+    
+    /**
+     * Validate if the raw packet has enough bytes for an Ethernet header
+     * @param rp RawPacket to validate
+     * @return true if packet is valid, false otherwise
+     */
+    bool isValid(RawPacket rp) override;
 };

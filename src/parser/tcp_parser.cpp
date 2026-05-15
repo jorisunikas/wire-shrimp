@@ -5,65 +5,27 @@
 #include <vector>
 
 
-static constexpr uint8_t TCP_MIN_HEADER_SIZE = 20;
-
-std::string extractHostname(const uint8_t* data, size_t len);
-
-bool TCPParser::parse(const uint8_t *data, size_t len) {
-    if (len < TCP_MIN_HEADER_SIZE) {
-        return false;
-    }
-
-    header.srcPort = (data[0] << 8) | data[1];
-    header.dstPort = (data[2] << 8) | data[3];
-    header.flags = data[13];
-    header.hostname = extractHostname(data, len);
-    
-    return true;
+// Reads 16-bit port number from the given data pointer
+uint16_t readPort(const uint8_t* data) {
+    return (data[0] << 8) | data[1];
 }
 
-TCPHeader TCPParser::getHeader() const {
+TCPHeader* TCPParser::parse(RawPacket rp) {
+    TCPHeader* header = new TCPHeader();
+    const uint8_t *data = rp.data + ETHERNET_HEADER_SIZE + IPV4_MIN_HEADER_SIZE; // TCP header starts after Ethernet + IPv4 headers
+    size_t len = rp.len - ETHERNET_HEADER_SIZE - IPV4_MIN_HEADER_SIZE;
+
+    header->srcPort = readPort(data);
+    header->dstPort = readPort(data + 2);
+    header->flags = data[13];
+
     return header;
 }
 
-std::string extractHostname(const uint8_t* data, size_t len) {
-    if (len < 40) return "";
-    
-    // Get IPv4 header length
-    uint8_t ipv4_len = (data[0] & 0x0F) * 4;
-    if (ipv4_len > len) return "";
-    
-    // Get TCP header length
-    uint8_t tcp_len = ((data[ipv4_len + 12] >> 4) & 0x0F) * 4;
-    if (ipv4_len + tcp_len > len) return "";
-    
-    // HTTP payload starts after TCP header
-    size_t http_offset = ipv4_len + tcp_len;
-    if (http_offset >= len) return "";
-    
-    // Convert to string for searching
-    std::string payload((const char*)(data + http_offset), len - http_offset);
-    
-    // Find "Host: " header
-    size_t pos = payload.find("Host: ");
-    if (pos == std::string::npos) return "";
-    
-    pos += 6;  // Skip "Host: "
-    
-    // Find end of line
-    size_t end = payload.find("\r\n", pos);
-    if (end == std::string::npos) {
-        end = payload.find("\n", pos);
+bool TCPParser::isValid(RawPacket rp) {
+    if (rp.len < TCP_MIN_HEADER_SIZE) {
+        return false; // Not enough data for minimum TCP header
     }
-    if (end == std::string::npos) {
-        end = payload.length();
-    }
-    
-    // Extract and trim
-    std::string hostname = payload.substr(pos, end - pos);
-    while (!hostname.empty() && (hostname.back() == '\r' || hostname.back() == ' ')) {
-        hostname.pop_back();
-    }
-    
-    return hostname;
+    // Additional checks can be added here (e.g. valid ports, flags)
+    return true;
 }

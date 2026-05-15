@@ -1,7 +1,8 @@
 #pragma once
 
 #include "protocol_parser.hpp"
-#include "../headers.hpp"
+#include "../data_types/packet.hpp"
+#include "../data_types/headers.hpp"
 #include <cstdint>
 #include <cstddef>
 
@@ -10,21 +11,19 @@
  * Extracts source/destination ports.
  */
 class UDPParser : public ProtocolParser {
-private:
-    UDPHeader header;
-
 public:
     /**
      * Parse UDP header (starts after Ethernet + IPv4 headers)
-     * @param data Pointer to raw bytes at transport layer offset
-     * @param len Length of remaining buffer
-     * @return true if parsing succeeded
+     * @param rp Raw packet containing the UDP header
+     * @return Pointer to parsed UDPHeader
      */
-    bool parse(const uint8_t *data, size_t len) override;
+    UDPHeader* parse(RawPacket rp) override;
     
     /**
-     * Get parsed UDP header
-     * @return Parsed UDPHeader
+     * Validate if the packet contains a valid UDP header
+     * Checks minimum length and UDP header fields
+     * @param rp Raw packet containing the UDP header
+     * @return true if valid UDP header is present
      */
-    UDPHeader getHeader() const;
+    bool isValid(RawPacket rp) override;
 };

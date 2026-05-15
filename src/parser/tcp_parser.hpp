@@ -1,7 +1,8 @@
 #pragma once
 
 #include "protocol_parser.hpp"
-#include "../headers.hpp"
+#include "../data_types/headers.hpp"
+#include "../data_types/packet.hpp"
 #include <cstdint>
 #include <cstddef>
 
@@ -10,21 +11,19 @@
  * Extracts source/destination ports and TCP flags.
  */
 class TCPParser : public ProtocolParser {
-private:
-    TCPHeader header;
-
 public:
     /**
      * Parse TCP header (starts after Ethernet + IPv4 headers)
-     * @param data Pointer to raw bytes at transport layer offset
-     * @param len Length of remaining buffer
-     * @return true if parsing succeeded
+     * @param rp Raw packet containing the TCP header
+     * @return Pointer to parsed TCPHeader if successful, nullptr otherwise
      */
-    bool parse(const uint8_t *data, size_t len) override;
+    TCPHeader* parse(RawPacket rp) override;
     
     /**
-     * Get parsed TCP header
-     * @return Parsed TCPHeader
+     * Validate if the packet contains a valid TCP header
+     * Checks minimum length and TCP header fields
+     * @param rp Raw packet containing the TCP header
+     * @return true if valid TCP header is present
      */
-    TCPHeader getHeader() const;
+    bool isValid(RawPacket rp) override;
 };

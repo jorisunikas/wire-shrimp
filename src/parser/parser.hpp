@@ -1,10 +1,13 @@
 #pragma once
 
-#include "../packet.hpp"
+#include "../data_types/packet.hpp"
 #include "ethernet_parser.hpp"
 #include "ipv4_parser.hpp"
 #include "tcp_parser.hpp"
 #include "udp_parser.hpp"
+#include "http_parser.hpp"
+
+#include "protocol_parser.hpp"
 #include <cstdint>
 #include <sys/types.h>
 #include <memory>
@@ -20,11 +23,10 @@ class Parser {
 public:
     /**
      * Parse a raw packet into a ParsedPacket
-     * @param data Pointer to raw bytes starting with ethernet header
-     * @param len  Length of raw bytes buffer
+     * @param rp RawPacket to parse
      * @return ParsedPacket containing parsed headers
      */
-    static ParsedPacket parse(const uint8_t *data, size_t len);
+    static ParsedPacket parse(RawPacket rp);
 
 private:
     // Parser instances (created as needed)
@@ -32,6 +34,7 @@ private:
     static std::unique_ptr<IPv4Parser> ipv4Parser;
     static std::unique_ptr<TCPParser> tcpParser;
     static std::unique_ptr<UDPParser> udpParser;
+    static std::unique_ptr<HTTPParser> httpParser;
 
     /**
      * Initialize parsers on first use

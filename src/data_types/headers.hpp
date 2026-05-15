@@ -7,15 +7,20 @@
  * Headers do not reflect real representation of the data. Instead they are
  * constructed during parsing and show only the data which will be displayed.
  */
+struct Header{  
+    virtual ~Header() = default;
 
-struct EthernetHeader {
+};
+
+struct EthernetHeader : Header {
     std::string dstMac;  ///< Destination address (must be first)
     std::string srcMac;  ///< Source address
+    std::string etherTypeStr; ///< Human readable EtherType (e.g. "IPv4", "ARP")
     u_int16_t etherType; ///< Defines packet type: 0x0800 -> IPv4, 0x0806 ->
                          ///< ARP, 0x86DD -> IPv6
 };
 
-struct IPv6Header {
+struct IPv6Header : Header {
     std::string srcIp;
     std::string dstIp;
     uint8_t protocol;       ///< defines inner packet protocol
@@ -23,7 +28,7 @@ struct IPv6Header {
     uint16_t payloadLength; ///< defines payload length
 };
 
-struct IPv4Header {
+struct IPv4Header : Header {
     std::string srcIp; ///< Source IP
     std::string dstIp; ///< Destination IP
     uint8_t protocol;  ///< Defines inner packet protocol: 1 -> ICMP,  6 -> TCP,
@@ -34,14 +39,19 @@ struct IPv4Header {
                  ///< (usually 5)
 };
 
-struct TCPHeader {
+struct TCPHeader : Header {
     uint16_t srcPort; ///< Source port
     uint16_t dstPort; ///< Destination port
     uint8_t flags;    ///< SYN, ACK, etc.
-    std::string hostname; ///< Extracted from HTTP Host header if present
 };
 
-struct UDPHeader {
+struct UDPHeader : Header {
     uint16_t srcPort; ///< Source port
     uint16_t dstPort; ///< Destination port
+    uint16_t length;  ///< UDP packet length
+    uint16_t checksum;///< UDP checksum
+};
+
+struct HTTPHeader : Header {
+    std::string details; ///< Raw HTTP header details (for display)
 };

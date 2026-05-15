@@ -1,9 +1,7 @@
 #include "ipv4_parser.hpp"
 #include <sstream>
 
-static constexpr uint8_t IPV4_MIN_HEADER_SIZE = 20;
-
-static std::string readIPv4Address(const uint8_t *data) {
+static std::string readIPv4Address(const uint8_t* data) {
     std::ostringstream oss;
     for (int i = 0; i < 4; i++) {
         if (i > 0)
@@ -13,24 +11,25 @@ static std::string readIPv4Address(const uint8_t *data) {
     return oss.str();
 }
 
-bool IPv4Parser::parse(const uint8_t *data, size_t len) {
-    if (len < IPV4_MIN_HEADER_SIZE) {
-        return false;
-    }
+IPv4Header* IPv4Parser::parse(RawPacket rp) {
+    IPv4Header* header = new IPv4Header();
+    const uint8_t *data = rp.data + ETHERNET_HEADER_SIZE;
 
-    header.ihl = data[0] & 0xF;
-    header.ttl = data[8];
-    header.protocol = data[9];
-    header.srcIp = readIPv4Address(data + 12);
-    header.dstIp = readIPv4Address(data + 16);
+
+    header->dstIp = data[0] & 0xF;
+    header->ttl = data[8];
+    header->protocol = data[9];
+    header->srcIp = readIPv4Address(data + 12);
+    header->dstIp = readIPv4Address(data + 16);
     
-    return true;
-}
-
-IPv4Header IPv4Parser::getHeader() const {
     return header;
 }
 
-uint8_t IPv4Parser::getHeaderSize() const {
-    return header.ihl * 4;
+bool IPv4Parser::isValid(RawPacket rp) {
+    if (rp.len < ETHERNET_HEADER_SIZE + IPV4_MIN_HEADER_SIZE) {
+        return false; // Not enough data for Ethernet + minimum IPv4 header
+    }
+    const uint8_t *data = rp.data + ETHERNET_HEADER_SIZE;
+    uint8_t version = data[0] >> 4;
+    return version == 4; // Check if version field is 4 for IPv4
 }

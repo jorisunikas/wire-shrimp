@@ -1,5 +1,5 @@
-#include "config.hpp"
-#include "packet.hpp"
+#include "data_types/config.hpp"
+#include "data_types/packet.hpp"
 #include "receiver.hpp"
 
 #include <getopt.h>
