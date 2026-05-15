@@ -15,6 +15,14 @@ struct EthernetHeader {
                          ///< ARP, 0x86DD -> IPv6
 };
 
+struct IPv6Header {
+    std::string srcIp;
+    std::string dstIp;
+    uint8_t protocol;       ///< defines inner packet protocol
+    uint8_t hopLimit;       ///< same as TTL for IPv4
+    uint16_t payloadLength; ///< defines payload length
+};
+
 struct IPv4Header {
     std::string srcIp; ///< Source IP
     std::string dstIp; ///< Destination IP
