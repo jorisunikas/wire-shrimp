@@ -1,4 +1,4 @@
-#include "ethernet_strategy.hpp"
+#include "ethernet_parser.hpp"
 #include <iomanip>
 #include <sstream>
 
@@ -14,10 +14,10 @@ static std::string readMac(const uint8_t *data) {
     return oss.str();
 }
 
-bool EthernetStrategy::parse(const uint8_t *data, size_t len) {
+bool EthernetParser::parse(const uint8_t *data, size_t len) {
     if (len < ETHERNET_HEADER_SIZE) {
         return false;
-    }
+    }   
 
     header.dstMac = readMac(data);
     header.srcMac = readMac(data + 6);
@@ -26,6 +26,6 @@ bool EthernetStrategy::parse(const uint8_t *data, size_t len) {
     return true;
 }
 
-EthernetHeader EthernetStrategy::getHeader() const {
+EthernetHeader EthernetParser::getHeader() const {
     return header;
 }

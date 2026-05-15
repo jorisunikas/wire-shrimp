@@ -1,16 +1,16 @@
 #pragma once
 
-#include "protocol_strategy.hpp"
+#include "protocol_parser.hpp"
 #include "../headers.hpp"
 #include <cstdint>
 #include <cstddef>
 #include <optional>
 
 /**
- * Strategy for parsing IPv4 headers.
+ * Parser for parsing IPv4 headers.
  * Extracts source/destination IPs, TTL, protocol, and IHL.
  */
-class IPv4Strategy : public ProtocolStrategy {
+class IPv4Parser : public ProtocolParser {
 private:
     IPv4Header header;
 

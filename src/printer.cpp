@@ -23,7 +23,8 @@ void Printer::printPacket(ParsedPacket packet) {
 
     if (packet.tcp.has_value()) {
         cout << "    [TCP]  Port " << packet.tcp->srcPort << " -> " << packet.tcp->dstPort 
-             << " (Flags: 0x" << hex << (int)packet.tcp->flags << dec << ")\n";
+             << " (Flags: 0x" << hex << (int)packet.tcp->flags << dec << ")\n" <<
+                "           Host: " << (packet.tcp->hostname != "" ? packet.tcp->hostname : "N/A") << "\n";
     } 
     else if (packet.udp.has_value()) {
         cout << "    [UDP]  Port " << packet.udp->srcPort << " -> " << packet.udp->dstPort << "\n";

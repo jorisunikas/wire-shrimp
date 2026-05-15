@@ -1,8 +1,8 @@
-#include "udp_strategy.hpp"
+#include "udp_parser.hpp"
 
 static constexpr uint8_t UDP_MIN_HEADER_SIZE = 8;
 
-bool UDPStrategy::parse(const uint8_t *data, size_t len) {
+bool UDPParser::parse(const uint8_t *data, size_t len) {
     if (len < UDP_MIN_HEADER_SIZE) {
         return false;
     }
@@ -13,6 +13,6 @@ bool UDPStrategy::parse(const uint8_t *data, size_t len) {
     return true;
 }
 
-UDPHeader UDPStrategy::getHeader() const {
+UDPHeader UDPParser::getHeader() const {
     return header;
 }

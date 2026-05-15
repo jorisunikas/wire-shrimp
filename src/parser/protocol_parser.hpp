@@ -4,12 +4,12 @@
 #include <cstddef>
 
 /**
- * Strategy interface for parsing different protocol layers.
+ * Parser interface for parsing different protocol layers.
  * Allows flexible, composable parsing logic.
  */
-class ProtocolStrategy {
+class ProtocolParser {
 public:
-    virtual ~ProtocolStrategy() = default;
+    virtual ~ProtocolParser() = default;
     
     /**
      * Parse protocol data from buffer

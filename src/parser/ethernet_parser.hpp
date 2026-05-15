@@ -1,15 +1,15 @@
 #pragma once
 
-#include "protocol_strategy.hpp"
+#include "protocol_parser.hpp"
 #include "../headers.hpp"
 #include <cstdint>
 #include <cstddef>
 
 /**
- * Strategy for parsing Ethernet headers.
+ * Parser for parsing Ethernet headers.
  * Extracts source/destination MAC addresses and EtherType.
  */
-class EthernetStrategy : public ProtocolStrategy {
+class EthernetParser : public ProtocolParser {
 private:
     EthernetHeader header;
 

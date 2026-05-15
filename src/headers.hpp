@@ -38,6 +38,7 @@ struct TCPHeader {
     uint16_t srcPort; ///< Source port
     uint16_t dstPort; ///< Destination port
     uint8_t flags;    ///< SYN, ACK, etc.
+    std::string hostname; ///< Extracted from HTTP Host header if present
 };
 
 struct UDPHeader {
