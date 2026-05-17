@@ -29,11 +29,7 @@ void Printer::printPacket(ParsedPacket packet) {
              << " (Flags: 0x" << std::hex << (int)packet.tcpData->flags << std::dec << ")\n";   
         if (packet.protocol.find("HTTP") != std::string::npos) {
             // Print HTTP details
-<<<<<<< HEAD
             //std::cout << "    [HTTP]" << " " << packet.httpData->details << "\n";
-=======
-            cout << "    [HTTP]" << " " << packet.httpData->details << "\n";
->>>>>>> 0b0316f (Import cleaning)
         };
     } 
     else if (packet.udpData.has_value()) {

@@ -3,6 +3,12 @@
 #include <cstdint>
 #include <string>
 
+static constexpr uint8_t ETHERNET_HEADER_SIZE = 14;
+static constexpr uint8_t IPV4_MIN_HEADER_SIZE = 20;
+static constexpr uint8_t TCP_MIN_HEADER_SIZE = 20;
+static constexpr uint8_t UDP_MIN_HEADER_SIZE = 8;
+static constexpr uint8_t IPV6_MIN_HEADER_SIZE = 40;
+
 /*
  * Headers do not reflect real representation of the data. Instead they are
  * constructed during parsing and show only the data which will be displayed.
@@ -16,7 +22,7 @@ struct EthernetHeader : Header {
     std::string dstMac;  ///< Destination address (must be first)
     std::string srcMac;  ///< Source address
     std::string etherTypeStr; ///< Human readable EtherType (e.g. "IPv4", "ARP")
-    u_int16_t etherType; ///< Defines packet type: 0x0800 -> IPv4, 0x0806 ->
+    uint16_t etherType; ///< Defines packet type: 0x0800 -> IPv4, 0x0806 ->
                          ///< ARP, 0x86DD -> IPv6
 };
 
