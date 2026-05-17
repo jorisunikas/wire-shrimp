@@ -60,4 +60,5 @@ struct UDPHeader : Header {
 
 struct HTTPHeader : Header {
     std::string details; ///< Raw HTTP header details (for display)
+    std::string hostURL;    ///< HTTP Host header value (for filtering)
 };

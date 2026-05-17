@@ -7,6 +7,16 @@ HTTPHeader HTTPParser::parse(RawPacket rp) {
     HTTPHeader header;
     header.details = std::string(reinterpret_cast<const char*>(httpData), httpDataLen);
 
+    // Finds "http://" from string and extracts the URL part
+    size_t hostPos = header.details.find("http://");
+    if (hostPos != std::string::npos) {
+        hostPos += 7; // Move past "http://"
+        size_t hostEnd = header.details.find("/", hostPos);
+        if (hostEnd != std::string::npos) {
+            header.hostURL = header.details.substr(hostPos-7, hostEnd - hostPos);
+        }
+    }
+
     return header;
 }
 
