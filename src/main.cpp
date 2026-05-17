@@ -1,11 +1,9 @@
 #include "data_types/config.hpp"
-#include "data_types/packet.hpp"
 #include "receiver.hpp"
 
 #include <getopt.h>
 #include <iostream>
 #include <string>
-#include <vector>
 
 void printHelp(const char *name) {
     std::cout << "Usage:\n" << name << " [OPTIONS]\n";

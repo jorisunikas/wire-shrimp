@@ -3,7 +3,6 @@
 #include "protocol_parser.hpp"
 #include "../data_types/packet.hpp"
 #include "../data_types/headers.hpp"
-#include <cstdint>
 #include <cstddef>
 
 /**

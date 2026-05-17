@@ -1,10 +1,5 @@
 #include "tcp_parser.hpp"
 
-#include <algorithm>
-#include <iostream>
-#include <vector>
-
-
 // Reads 16-bit port number from the given data pointer
 uint16_t readPort(const uint8_t* data) {
     return (data[0] << 8) | data[1];

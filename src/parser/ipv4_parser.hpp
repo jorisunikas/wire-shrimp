@@ -3,9 +3,7 @@
 #include "protocol_parser.hpp"
 #include "../data_types/headers.hpp"
 #include "../data_types/packet.hpp"
-#include <cstdint>
 #include <cstddef>
-#include <optional>
 
 /**
  * Parser for parsing IPv4 headers.

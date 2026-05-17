@@ -1,8 +1,7 @@
-using namespace std;
-
 #include "receiver.hpp"
 #include "parser/parser.hpp"
 #include "printer.hpp"
+#include <iostream>
 
 // --- CONSTRUCTOR / DESTRUCTOR ---
 
@@ -12,11 +11,11 @@ Receiver::Receiver(Config cfg){
     device = pcpp::PcapLiveDeviceList::getInstance().getDeviceByIpOrName(config.interface);
     
     if (device == nullptr) {
-        cerr << "Error: Interface '" << config.interface << "' not found." << "\n";
+        std::cerr << "Error: Interface '" << config.interface << "' not found." << "\n";
         return;
     }
     if (!device->open()) {
-        cerr << "Error: Could not open device." << "\n";
+        std::cerr << "Error: Could not open device." << "\n";
         return;
     }
 
@@ -31,17 +30,17 @@ Receiver::~Receiver(){
 
 void Receiver::start() {
     if (device == nullptr || !device->isOpened()) {
-        cerr << "Error: Device not initialized. Call Capture() first." << "\n";
+        std::cerr << "Error: Device not initialized. Call Capture() first." << "\n";
         return;
     }
 
-    cout << "Starting capture on " << device->getName() << "..." << "\n";
+    std::cout << "Starting capture on " << device->getName() << "..." << "\n";
 
     currentPacketCount = 0;
     active = true;
     device->startCapture(Receiver::onPacketArrives, this);
     while(active){
-        this_thread::sleep_for(chrono::milliseconds(100));
+        std::this_thread::sleep_for(std::chrono::milliseconds(100));
     }
     stop();
 }
@@ -49,7 +48,7 @@ void Receiver::start() {
 void Receiver::stop() {
     if (device != nullptr) {
         device->stopCapture();
-        cout << "Capture stopped." << "\n";
+        std::cout << "Capture stopped." << "\n";
     }
 }
 
@@ -65,7 +64,7 @@ void Receiver::onPacketArrives(pcpp::RawPacket* packet, pcpp::PcapLiveDevice* de
 void Receiver::onPacket(pcpp::RawPacket* rawPacket) {
     if (!active) return;
 
-    //cout << "Found Packet #" << currentPacketCount << "\n";
+    //std::cout << "Found Packet #" << currentPacketCount << "\n";
     
     ParsedPacket pp =  Parser::parse({
         rawPacket->getRawData(),
@@ -77,7 +76,7 @@ void Receiver::onPacket(pcpp::RawPacket* rawPacket) {
     currentPacketCount++;
     if (config.count > 0 && currentPacketCount >= config.count) {
         active = false;
-        cout << "Reached target packet count: " << config.count << "\n";
+        std::cout << "Reached target packet count: " << config.count << "\n";
     }
 }
 

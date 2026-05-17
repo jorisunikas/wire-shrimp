@@ -7,8 +7,6 @@
 #include "udp_parser.hpp"
 #include "http_parser.hpp"
 
-#include "protocol_parser.hpp"
-#include <cstdint>
 #include <sys/types.h>
 #include <memory>
 

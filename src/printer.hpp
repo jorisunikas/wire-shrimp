@@ -1,10 +1,7 @@
 #pragma once
 
 #include "data_types/packet.hpp"
-#include <string>
 #include <PcapLiveDevice.h>
-
-using namespace std;
 
 class Printer {
   public:
