@@ -1,5 +1,7 @@
 #include "http_parser.hpp"
 
+#include <regex>
+
 HTTPHeader HTTPParser::parse(RawPacket rp) {
     const uint8_t* httpData = rp.data + ETHERNET_HEADER_SIZE + IPV4_MIN_HEADER_SIZE + TCP_MIN_HEADER_SIZE;
     size_t httpDataLen = rp.len - ETHERNET_HEADER_SIZE - IPV4_MIN_HEADER_SIZE - TCP_MIN_HEADER_SIZE;
@@ -8,15 +10,12 @@ HTTPHeader HTTPParser::parse(RawPacket rp) {
     header.details = std::string(reinterpret_cast<const char*>(httpData), httpDataLen);
 
     // Finds "http://" from string and extracts the URL part
-    size_t hostPos = header.details.find("http://");
-    if (hostPos != std::string::npos) {
-        hostPos += 7; // Move past "http://"
-        size_t hostEnd = header.details.find("/", hostPos);
-        if (hostEnd != std::string::npos) {
-            header.hostURL = header.details.substr(hostPos-7, hostEnd - hostPos);
-        }
+    std::regex hostRegex("Host: ([^\r\n]+)");
+    std::smatch match;
+    
+    if (std::regex_search(header.details, match, hostRegex)) {
+        header.hostURL = match[1].str();
     }
-
     return header;
 }
 
