@@ -16,7 +16,7 @@ IPv4Header* IPv4Parser::parse(RawPacket rp) {
     const uint8_t *data = rp.data + ETHERNET_HEADER_SIZE;
 
 
-    header->dstIp = data[0] & 0xF;
+    header->ihl = data[0] & 0xF;
     header->ttl = data[8];
     header->protocol = data[9];
     header->srcIp = readIPv4Address(data + 12);
