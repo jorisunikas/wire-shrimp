@@ -1,5 +1,5 @@
 #include "receiver.hpp"
-#include "parser/parser.hpp"
+#include "parser.hpp"
 #include "printer.hpp"
 #include <iostream>
 
