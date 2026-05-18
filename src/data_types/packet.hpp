@@ -10,10 +10,11 @@ struct RawPacket {
 };
 
 struct ParsedPacket {
-    EthernetHeader ethData;           ///< Parsed Ethernet header
+    EthernetHeader ethData;             ///< Parsed Ethernet header
     std::optional<IPv4Header> IPv4Data; ///< Present only if IPv4
-    std::optional<TCPHeader> tcpData; ///< Present only if TCP
-    std::optional<UDPHeader> udpData; ///< Present only if UDP
+    std::optional<IPv6Header> IPv6Data; ///< Present only if IPv6
+    std::optional<TCPHeader> tcpData;   ///< Present only if TCP
+    std::optional<UDPHeader> udpData;   ///< Present only if UDP
     std::optional<HTTPHeader> httpData; ///< Present only if HTTP
 
     std::string protocol; ///< Human readable protocol: "TCP", "UDP", etc.

@@ -2,6 +2,7 @@
 #include "parser.hpp"
 #include "printer.hpp"
 #include <iostream>
+#include <ostream>
 
 // --- CONSTRUCTOR / DESTRUCTOR ---
 
