@@ -7,6 +7,7 @@
 #include "parsers/tcp_parser.hpp"
 #include "parsers/udp_parser.hpp"
 #include "parsers/http_parser.hpp"
+#include "indexer.hpp"
 
 #include <memory>
 
@@ -34,8 +35,11 @@ private:
     static std::unique_ptr<UDPParser> udpParser;
     static std::unique_ptr<HTTPParser> httpParser;
 
+    // Indexer
+    static std::unique_ptr<Indexer> indexer;
+
     /**
      * Initialize parsers on first use
      */
-    static void initializeParsers();
+    static void initialize();
 };

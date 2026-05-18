@@ -14,7 +14,7 @@ public:
      * @param rp Raw packet containing the UDP header
      * @return Pointer to parsed UDPHeader
      */
-    UDPHeader parse(RawPacket rp);
+    UDPHeader parse(RawPacket& rp);
     
     /**
      * Validate if the packet contains a valid UDP header
@@ -22,5 +22,5 @@ public:
      * @param rp Raw packet containing the UDP header
      * @return true if valid UDP header is present
      */
-    bool isValid(RawPacket rp);
+    bool isValid(RawPacket& rp);
 };

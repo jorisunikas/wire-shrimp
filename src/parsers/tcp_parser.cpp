@@ -5,7 +5,7 @@ uint16_t readPort(const uint8_t* data) {
     return (data[0] << 8) | data[1];
 }
 
-TCPHeader TCPParser::parse(RawPacket rp) {
+TCPHeader TCPParser::parse(RawPacket& rp) {
     TCPHeader header;
     const uint8_t *data = rp.data + ETHERNET_HEADER_SIZE + IPV4_MIN_HEADER_SIZE; // TCP header starts after Ethernet + IPv4 headers
     size_t len = rp.len - ETHERNET_HEADER_SIZE - IPV4_MIN_HEADER_SIZE;
@@ -17,7 +17,7 @@ TCPHeader TCPParser::parse(RawPacket rp) {
     return header;
 }
 
-bool TCPParser::isValid(RawPacket rp) {
+bool TCPParser::isValid(RawPacket& rp) {
     if (rp.len < TCP_MIN_HEADER_SIZE) {
         return false; // Not enough data for minimum TCP header
     }

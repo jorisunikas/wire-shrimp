@@ -12,7 +12,7 @@ static std::string readIPv6Address(const uint8_t *data) {
     return oss.str();
 }
 
-IPv6Header IPv6Parser::parse(RawPacket rp) {
+IPv6Header IPv6Parser::parse(RawPacket& rp) {
     IPv6Header header;
     const uint8_t *data = rp.data + ETHERNET_HEADER_SIZE;
 
@@ -25,7 +25,7 @@ IPv6Header IPv6Parser::parse(RawPacket rp) {
     return header;
 }
 
-bool IPv6Parser::isValid(RawPacket rp) {
+bool IPv6Parser::isValid(RawPacket& rp) {
     if (rp.len < ETHERNET_HEADER_SIZE + IPV6_MIN_HEADER_SIZE) {
         return false;
     }

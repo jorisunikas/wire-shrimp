@@ -14,7 +14,7 @@ public:
      * @param rp Raw packet containing the IPv4 header
      * @return Pointer to parsed IPv4Header
      */
-    IPv4Header parse(RawPacket rp);
+    IPv4Header parse(RawPacket& rp);
 
     /**
      * Validate if the packet contains a valid IPv4 header
@@ -22,5 +22,5 @@ public:
      * @param rp Raw packet containing the IPv4 header
      * @return true if valid IPv4 header is present
      */
-    bool isValid(RawPacket rp);    
+    bool isValid(RawPacket& rp);    
 };

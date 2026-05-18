@@ -9,7 +9,9 @@ unique_ptr<TCPParser> Parser::tcpParser = nullptr;
 unique_ptr<UDPParser> Parser::udpParser = nullptr;
 unique_ptr<HTTPParser> Parser::httpParser = nullptr;
 
-void Parser::initializeParsers() {
+unique_ptr<Indexer> Parser::indexer = nullptr;
+
+void Parser::initialize() {
     if (ethernetParser == nullptr) {
         // L2
         ethernetParser = make_unique<EthernetParser>();
@@ -20,6 +22,8 @@ void Parser::initializeParsers() {
         udpParser = make_unique<UDPParser>();
         httpParser = make_unique<HTTPParser>();
     }
+
+    Parser::indexer = make_unique<Indexer>();
 }
 
 ParsedPacket Parser::parse(RawPacket rp) {
@@ -27,7 +31,7 @@ ParsedPacket Parser::parse(RawPacket rp) {
     int offset = 0;
 
     // Initialize parsers on first use
-    initializeParsers();
+    initialize();
 
     // ===== LAYER 2: ETHERNET =====
     if (ethernetParser->isValid(rp)) {
@@ -64,9 +68,20 @@ ParsedPacket Parser::parse(RawPacket rp) {
 
         // HTTP
         if (pp.tcpData->srcPort == 80 || pp.tcpData->dstPort == 80) {
+            // Parsing
             if (httpParser->isValid(rp)) {
                 pp.protocol.append(" HTTP");
-                pp.httpData = httpParser->parse(rp);
+                pp.httpData = httpParser->parse(rp, *indexer);
+            }
+
+            //Extracting URL
+            if(indexer->getURL(pp.IPv4Data->srcIp) != "") {
+                pp.httpData->hostURL = indexer->getURL(pp.IPv4Data->srcIp);
+            } else if (pp.httpData) {
+                pp.httpData->hostURL = httpParser->extractHostURL(*pp.httpData);
+                if(pp.httpData->hostURL != "") {
+                    indexer->addURL(pp.httpData->hostURL, pp.IPv4Data->dstIp);
+                }
             }
         }
     } 

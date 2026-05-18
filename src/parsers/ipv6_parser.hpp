@@ -15,12 +15,12 @@ public:
      * @param rp Raw packet containing the IPv6 header
      * @return Parsed IPv6Header
      */
-    IPv6Header parse(RawPacket rp);
+    IPv6Header parse(RawPacket& rp);
 
     /**
      * Checks minimum length 
      * @param rp Raw packet containing the IPv6 header
      * @return true if valid IPv6 header is present
      */
-    bool isValid(RawPacket rp);    
+    bool isValid(RawPacket& rp);    
 };

@@ -14,12 +14,12 @@ public:
      * @param rp RawPacket to parse
      * @return Parsed EthernetHeader
      */
-    EthernetHeader parse(RawPacket rp);
+    EthernetHeader parse(RawPacket& rp);
     
     /**
      * Validate if the raw packet has enough bytes for an Ethernet header
      * @param rp RawPacket to validate
      * @return true if packet is valid, false otherwise
      */
-    bool isValid(RawPacket rp);
+    bool isValid(RawPacket& rp);
 };
