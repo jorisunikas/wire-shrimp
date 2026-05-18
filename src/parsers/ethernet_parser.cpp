@@ -13,7 +13,7 @@ static std::string readMac(RawPacket rp) {
     return oss.str();
 }
 
-EthernetHeader EthernetParser::parse(RawPacket rp) {
+EthernetHeader EthernetParser::parse(RawPacket& rp) {
     EthernetHeader header;
     header.dstMac = readMac(rp);
     header.srcMac = readMac(rp);
@@ -32,6 +32,6 @@ EthernetHeader EthernetParser::parse(RawPacket rp) {
     return header;
 }
 
-bool EthernetParser::isValid(RawPacket rp){
+bool EthernetParser::isValid(RawPacket& rp){
     return rp.len >= ETHERNET_HEADER_SIZE;
 }

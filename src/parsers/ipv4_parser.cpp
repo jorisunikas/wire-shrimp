@@ -11,7 +11,7 @@ static std::string readIPv4Address(const uint8_t* data) {
     return oss.str();
 }
 
-IPv4Header IPv4Parser::parse(RawPacket rp) {
+IPv4Header IPv4Parser::parse(RawPacket& rp) {
     IPv4Header header;
     const uint8_t *data = rp.data + ETHERNET_HEADER_SIZE;
 
@@ -25,7 +25,7 @@ IPv4Header IPv4Parser::parse(RawPacket rp) {
     return header;
 }
 
-bool IPv4Parser::isValid(RawPacket rp) {
+bool IPv4Parser::isValid(RawPacket& rp) {
     if (rp.len < ETHERNET_HEADER_SIZE + IPV4_MIN_HEADER_SIZE) {
         return false; // Not enough data for Ethernet + minimum IPv4 header
     }

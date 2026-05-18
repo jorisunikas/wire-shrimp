@@ -2,24 +2,28 @@
 
 #include <regex>
 
-HTTPHeader HTTPParser::parse(RawPacket rp) {
+HTTPHeader HTTPParser::parse(RawPacket& rp, Indexer& indexer) {
     const uint8_t* httpData = rp.data + ETHERNET_HEADER_SIZE + IPV4_MIN_HEADER_SIZE + TCP_MIN_HEADER_SIZE;
     size_t httpDataLen = rp.len - ETHERNET_HEADER_SIZE - IPV4_MIN_HEADER_SIZE - TCP_MIN_HEADER_SIZE;
 
     HTTPHeader header;
     header.details = std::string(reinterpret_cast<const char*>(httpData), httpDataLen);
 
-    // Finds "http://" from string and extracts the URL part
-    std::regex hostRegex("Host: ([^\r\n]+)");
-    std::smatch match;
-    
-    if (std::regex_search(header.details, match, hostRegex)) {
-        header.hostURL = match[1].str();
-    }
+    header.hostURL = extractHostURL(header);
+
     return header;
 }
 
-bool HTTPParser::isValid(RawPacket rp) {
+std::string HTTPParser::extractHostURL(const HTTPHeader& httpHeader) {
+    std::regex hostRegex("Host: ([^\r\n]+)");
+    std::smatch match;
+    if (std::regex_search(httpHeader.details, match, hostRegex)) {
+        return match[1].str();
+    }
+    return "";
+}
+
+bool HTTPParser::isValid(RawPacket& rp) {
     const uint8_t* httpData = rp.data + ETHERNET_HEADER_SIZE + IPV4_MIN_HEADER_SIZE + TCP_MIN_HEADER_SIZE;
     size_t httpDataLen = rp.len - ETHERNET_HEADER_SIZE - IPV4_MIN_HEADER_SIZE - TCP_MIN_HEADER_SIZE;
 

@@ -15,7 +15,7 @@ public:
      * @param rp Raw packet containing the TCP header
      * @return Pointer to parsed TCPHeader if successful, nullptr otherwise
      */
-    TCPHeader parse(RawPacket rp);
+    TCPHeader parse(RawPacket& rp);
     
     /**
      * Validate if the packet contains a valid TCP header
@@ -23,5 +23,5 @@ public:
      * @param rp Raw packet containing the TCP header
      * @return true if valid TCP header is present
      */
-    bool isValid(RawPacket rp);
+    bool isValid(RawPacket& rp);
 };

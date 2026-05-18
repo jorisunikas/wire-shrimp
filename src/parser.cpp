@@ -1,4 +1,5 @@
 #include "parser.hpp"
+#include "indexer.hpp"
 #include "parsers/ethernet_parser.hpp"
 #include "parsers/http_parser.hpp"
 #include "parsers/ipv4_parser.hpp"
@@ -14,8 +15,10 @@ ParsedPacket Parser::parse(RawPacket rp) {
     UDPParser udpParser;
     HTTPParser httpParser;
     ParsedPacket pp;
+    Indexer indexer;
     int offset = 0;
 
+    // Initialize parsers on first use
     // ===== LAYER 2: ETHERNET =====
     if (ethernetParser.isValid(rp)) {
         pp.valid = true;
@@ -58,9 +61,20 @@ ParsedPacket Parser::parse(RawPacket rp) {
 
         // HTTP
         if (pp.tcpData->srcPort == 80 || pp.tcpData->dstPort == 80) {
+            // Parsing
             if (httpParser.isValid(rp)) {
                 pp.protocol.append(" HTTP");
-                pp.httpData = httpParser.parse(rp);
+                pp.httpData = httpParser.parse(rp, indexer);
+            }
+
+            // Extracting URL
+            if (indexer.getURL(pp.IPv4Data->srcIp) != "") {
+                pp.httpData->hostURL = indexer.getURL(pp.IPv4Data->srcIp);
+            } else if (pp.httpData) {
+                pp.httpData->hostURL = httpParser.extractHostURL(*pp.httpData);
+                if (pp.httpData->hostURL != "") {
+                    indexer.addURL(pp.httpData->hostURL, pp.IPv4Data->dstIp);
+                }
             }
         }
     }
