@@ -14,7 +14,7 @@ ParsedPacket Parser::parse(RawPacket rp) {
     TCPParser tcpParser;
     UDPParser udpParser;
     HTTPParser httpParser;
-    
+
     ParsedPacket pp;
     Indexer indexer;
 
@@ -33,12 +33,16 @@ ParsedPacket Parser::parse(RawPacket rp) {
     // ===== LAYER 3: IPv4, IPv6 =====
 
     int l3Type = pp.ethData.etherType;
+    int l4Type = -1;
+
     if (l3Type == 0x0800 && ipv4Parser.isValid(rp)) {
         pp.IPv4Data = ipv4Parser.parse(rp);
         pp.protocol.append("IPv4");
+        l4Type = pp.IPv4Data->protocol;
     } else if (l3Type == 0x86DD && ipv6Parser.isValid(rp)) {
-        //pp.IPv6Data = ipv6Parser.parse(rp);
+        pp.IPv6Data = ipv6Parser.parse(rp);
         pp.protocol.append("IPv6");
+        l4Type = pp.IPv6Data->protocol;
     } else if (l3Type == 0x0806) {
         pp.protocol.append("ARP");
         return pp;
@@ -48,50 +52,42 @@ ParsedPacket Parser::parse(RawPacket rp) {
 
     // ===== LAYER 4: TCP/UDP =====
 
-    /*
-     * Parse transport layer based on IPv4 protocol field
-     * 1 = ICMP, 6 = TCP, 17 = UDP
-     */
-
-    // TCP
-    if (pp.IPv4Data->protocol == 6) {
-
+    if (l4Type == 6) {
         if (tcpParser.isValid(rp)) {
             pp.tcpData = tcpParser.parse(rp);
             pp.protocol.append(" TCP");
-        }
 
-        // HTTP
-        if (pp.tcpData->srcPort == 80 || pp.tcpData->dstPort == 80) {
-            // Parsing
-            if (httpParser.isValid(rp)) {
-                pp.protocol.append(" HTTP");
-                pp.httpData = httpParser.parse(rp, indexer);
-            }
+            if (pp.tcpData->srcPort == 80 || pp.tcpData->dstPort == 80) {
+                if (httpParser.isValid(rp)) {
+                    pp.protocol.append(" HTTP");
+                    pp.httpData = httpParser.parse(rp, indexer);
+                }
 
-            // Extracting URL
-            if (indexer.getURL(pp.IPv4Data->srcIp) != "") {
-                pp.httpData->hostURL = indexer.getURL(pp.IPv4Data->srcIp);
-            } 
-            else if(pp.httpData) {
-                pp.httpData->hostURL = httpParser.extractHostURL(*pp.httpData);
-                if (pp.httpData->hostURL != "") {
-                    indexer.addURL(pp.IPv4Data->dstIp, pp.httpData->hostURL);
+                std::string srcIp =
+                    pp.IPv4Data ? pp.IPv4Data->srcIp : pp.IPv6Data->srcIp;
+                std::string dstIp =
+                    pp.IPv4Data ? pp.IPv4Data->dstIp : pp.IPv6Data->dstIp;
+
+                if (indexer.getURL(srcIp) != "") {
+                    pp.httpData->hostURL = indexer.getURL(srcIp);
+                } else if (pp.httpData) {
+                    pp.httpData->hostURL =
+                        httpParser.extractHostURL(*pp.httpData);
+                    if (pp.httpData->hostURL != "") {
+                        indexer.addURL(dstIp, pp.httpData->hostURL);
+                    }
                 }
             }
         }
-    }
-    // UDP
-    else if (pp.IPv4Data->protocol == 17) {
+    } else if (l4Type == 17) {
         if (udpParser.isValid(rp)) {
             pp.udpData = udpParser.parse(rp);
             pp.protocol.append(" UDP");
         }
-    }
-    // ICMP (no parsing implemented)
-    else if (pp.IPv4Data->protocol == 1) {
-
+    } else if (l4Type == 1) {
         pp.protocol.append(" ICMP");
+    } else if (l4Type == 58) {
+        pp.protocol.append(" ICMPv6");
     }
 
     // ===== LAYER 6: HTTP/HTTPS/DNS =====
