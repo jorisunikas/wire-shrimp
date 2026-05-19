@@ -4,10 +4,11 @@
 
 void Printer::printPacket(ParsedPacket packet) {
     // Only print HTTP packets for now
+    /*
     if(packet.protocol.find("HTTP") == std::string::npos) {
         return;
     }
-
+    */
 
 
     if (!packet.valid) {
