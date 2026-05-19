@@ -7,8 +7,6 @@
 #include "parsers/tcp_parser.hpp"
 #include "parsers/udp_parser.hpp"
 
-#include <iostream>
-
 ParsedPacket Parser::parse(RawPacket rp) {
     EthernetParser ethernetParser;
     IPv4Parser ipv4Parser;
@@ -39,8 +37,8 @@ ParsedPacket Parser::parse(RawPacket rp) {
         pp.IPv4Data = ipv4Parser.parse(rp);
         pp.protocol.append("IPv4");
     } else if (l3Type == 0x86DD && ipv6Parser.isValid(rp)) {
+        //pp.IPv6Data = ipv6Parser.parse(rp);
         pp.protocol.append("IPv6");
-        return pp;
     } else if (l3Type == 0x0806) {
         pp.protocol.append("ARP");
         return pp;

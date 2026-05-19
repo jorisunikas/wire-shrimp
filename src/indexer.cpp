@@ -2,7 +2,8 @@
 
 #include <iostream>
 
-#include <bits/stdc++.h>
+//#include <bits/stdc++.h>
+//
 std::string trim(std::string str) {
 	const char* typeOfWhitespaces = " \t\n\r\f\v";
 	str.erase(str.find_last_not_of(typeOfWhitespaces) + 1);
