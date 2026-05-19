@@ -9,6 +9,7 @@ void Printer::printPacket(ParsedPacket packet) {
     }
 
 
+
     if (!packet.valid) {
         std::cout << "[-] Invalid or malformed packet captured.\n";
         std::cout << "--------------------------------------------------\n";
