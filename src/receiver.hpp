@@ -12,6 +12,7 @@ class Receiver {
     pcpp::PcapLiveDevice *device;
 
     int currentPacketCount;
+    std::chrono::steady_clock::time_point startTime;
     bool active;
 
     // Static callback for PcapPlusPlus
