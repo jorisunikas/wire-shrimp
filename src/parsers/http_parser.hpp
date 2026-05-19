@@ -23,7 +23,7 @@ public:
      * @param httpHeader Raw HTTP header string
      * @return Extracted Host URL or empty string if not found
      */
-    std::string extractHostURL(const HTTPHeader& httpHeader);
+    std::string extractHostURL(HTTPHeader& httpHeader);
     
     /**
      * Validate if the packet contains a valid HTTP header

@@ -7,6 +7,8 @@
 #include "parsers/tcp_parser.hpp"
 #include "parsers/udp_parser.hpp"
 
+#include <iostream>
+
 ParsedPacket Parser::parse(RawPacket rp) {
     EthernetParser ethernetParser;
     IPv4Parser ipv4Parser;
@@ -14,8 +16,10 @@ ParsedPacket Parser::parse(RawPacket rp) {
     TCPParser tcpParser;
     UDPParser udpParser;
     HTTPParser httpParser;
+    
     ParsedPacket pp;
     Indexer indexer;
+
     int offset = 0;
 
     // Initialize parsers on first use
@@ -70,10 +74,11 @@ ParsedPacket Parser::parse(RawPacket rp) {
             // Extracting URL
             if (indexer.getURL(pp.IPv4Data->srcIp) != "") {
                 pp.httpData->hostURL = indexer.getURL(pp.IPv4Data->srcIp);
-            } else if (pp.httpData) {
+            } 
+            else if(pp.httpData) {
                 pp.httpData->hostURL = httpParser.extractHostURL(*pp.httpData);
                 if (pp.httpData->hostURL != "") {
-                    indexer.addURL(pp.httpData->hostURL, pp.IPv4Data->dstIp);
+                    indexer.addURL(pp.IPv4Data->dstIp, pp.httpData->hostURL);
                 }
             }
         }

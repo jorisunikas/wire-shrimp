@@ -4,11 +4,10 @@
 
 void Printer::printPacket(ParsedPacket packet) {
     // Only print HTTP packets for now
-    /*
     if(packet.protocol.find("HTTP") == std::string::npos) {
         return;
     }
-    */
+
 
     if (!packet.valid) {
         std::cout << "[-] Invalid or malformed packet captured.\n";
@@ -31,7 +30,7 @@ void Printer::printPacket(ParsedPacket packet) {
              << " (Flags: 0x" << std::hex << (int)packet.tcpData->flags << std::dec << ")\n";   
         if (packet.protocol.find("HTTP") != std::string::npos) {
             // Print HTTP details
-            std::cout << "    [HTTP]" << " " << packet.httpData->hostURL << "\n";
+            std::cout << "    [HTTP]" << " URL: " << packet.httpData->hostURL << "\n";
         };
     } 
     else if (packet.udpData.has_value()) {

@@ -14,7 +14,7 @@ HTTPHeader HTTPParser::parse(RawPacket& rp, Indexer& indexer) {
     return header;
 }
 
-std::string HTTPParser::extractHostURL(const HTTPHeader& httpHeader) {
+std::string HTTPParser::extractHostURL(HTTPHeader& httpHeader) {
     std::regex hostRegex("Host: ([^\r\n]+)");
     std::smatch match;
     if (std::regex_search(httpHeader.details, match, hostRegex)) {

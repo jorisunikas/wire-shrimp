@@ -8,10 +8,10 @@
 #include <string>
 
 class Indexer {
-private:
-    std::unordered_map<std::string, std::string> ipMap;;
+protected:
+    static std::unordered_map<std::string, std::string> ipMap;
 
 public:
-    void addURL(const std::string& url, const std::string& ip);
-    std::string getURL(const std::string& ip) const;
+    void addURL(std::string ip, std::string url);
+    std::string getURL(std::string ip);
 };
