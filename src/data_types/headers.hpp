@@ -8,14 +8,10 @@ static constexpr uint8_t IPV4_MIN_HEADER_SIZE = 20;
 static constexpr uint8_t TCP_MIN_HEADER_SIZE = 20;
 static constexpr uint8_t UDP_MIN_HEADER_SIZE = 8;
 static constexpr uint8_t IPV6_MIN_HEADER_SIZE = 40;
+static constexpr uint8_t TLS_MIN_HEADER_SIZE = 5;
 
-/*
- * Headers do not reflect real representation of the data. Instead they are
- * constructed during parsing and show only the data which will be displayed.
- */
 struct Header{  
     virtual ~Header() = default;
-
 };
 
 struct EthernetHeader : Header {
@@ -61,4 +57,39 @@ struct UDPHeader : Header {
 struct HTTPHeader : Header {
     std::string details; ///< Raw HTTP header details (for display)
     std::string hostURL;    ///< HTTP Host header value (for filtering)
+};
+
+struct TLSRecordHeader {
+    uint8_t  contentType;  // 0x16 for Handshake
+    uint16_t version;      // TLS version (e.g., 0x0303 for TLS 1.2)
+    std::string versionStr; // Human readable version (e.g., "TLS 1.2")
+    uint16_t length;       // Length of data following this header
+};
+struct TLSHandshakeHeader {
+    uint8_t  handshakeType; // 0x01 for Client Hello
+    uint8_t  length[3];     // 24-bit integer tracking message length
+    
+    // Helper method because C++ has no native uint24_t type
+    uint32_t getLength() const {
+        return (length[0] << 16) | (length[1] << 8) | length[2];
+    }
+};
+struct TLSExtensionHeader {
+    uint16_t type;         // Extension type (0x0000 for SNI)
+    uint16_t length;       // Length of this specific extension's data
+};
+struct TLSSniHeader {
+    uint16_t listLength;   // Length of the server name list
+    uint8_t  nameType;     // 0x00 for hostname
+    uint16_t nameLength;   // Length of the plain-text string
+    std::string serverName; // The actual server name (e.g., "example.com")
+};
+
+struct TLSHeader : Header {
+    TLSRecordHeader recordHeader;
+    TLSHandshakeHeader handshakeHeader;
+    TLSExtensionHeader extensionHeader;
+    TLSSniHeader sniHeader;
+    std::string hostURL; // Extracted from SNI or HTTP Host header for easier filtering
+    bool isHandshake = false;
 };

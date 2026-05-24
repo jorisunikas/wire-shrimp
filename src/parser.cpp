@@ -6,6 +6,7 @@
 #include "parsers/ipv6_parser.hpp"
 #include "parsers/tcp_parser.hpp"
 #include "parsers/udp_parser.hpp"
+#include "parsers/tls_parser.hpp"
 
 ParsedPacket Parser::parse(RawPacket rp) {
     EthernetParser ethernetParser;
@@ -14,7 +15,7 @@ ParsedPacket Parser::parse(RawPacket rp) {
     TCPParser tcpParser;
     UDPParser udpParser;
     HTTPParser httpParser;
-
+    TLSParser tlsParser;
     ParsedPacket pp;
     Indexer indexer;
 
@@ -56,28 +57,6 @@ ParsedPacket Parser::parse(RawPacket rp) {
         if (tcpParser.isValid(rp)) {
             pp.tcpData = tcpParser.parse(rp);
             pp.protocol.append(" TCP");
-
-            if (pp.tcpData->srcPort == 80 || pp.tcpData->dstPort == 80) {
-                if (httpParser.isValid(rp)) {
-                    pp.protocol.append(" HTTP");
-                    pp.httpData = httpParser.parse(rp, indexer);
-                }
-
-                std::string srcIp =
-                    pp.IPv4Data ? pp.IPv4Data->srcIp : pp.IPv6Data->srcIp;
-                std::string dstIp =
-                    pp.IPv4Data ? pp.IPv4Data->dstIp : pp.IPv6Data->dstIp;
-
-                if (indexer.getURL(srcIp) != "") {
-                    pp.httpData->hostURL = indexer.getURL(srcIp);
-                } else if (pp.httpData) {
-                    pp.httpData->hostURL =
-                        httpParser.extractHostURL(*pp.httpData);
-                    if (pp.httpData->hostURL != "") {
-                        indexer.addURL(dstIp, pp.httpData->hostURL);
-                    }
-                }
-            }
         }
     } else if (l4Type == 17) {
         if (udpParser.isValid(rp)) {
@@ -91,6 +70,48 @@ ParsedPacket Parser::parse(RawPacket rp) {
     }
 
     // ===== LAYER 6: HTTP/HTTPS/DNS =====
+    if (pp.tcpData->srcPort == 80 || pp.tcpData->dstPort == 80) {
+        if (httpParser.isValid(rp)) {
+            pp.protocol.append(" HTTP");
+            pp.httpData = httpParser.parse(rp, indexer);
+        }
+
+        std::string srcIp =
+            pp.IPv4Data ? pp.IPv4Data->srcIp : pp.IPv6Data->srcIp;
+        std::string dstIp =
+            pp.IPv4Data ? pp.IPv4Data->dstIp : pp.IPv6Data->dstIp;
+
+        if (indexer.getURL(srcIp) != "") {
+            pp.httpData->hostURL = indexer.getURL(srcIp);
+        } else if (pp.httpData) {
+            pp.httpData->hostURL =
+                httpParser.extractHostURL(*pp.httpData);
+            if (pp.httpData->hostURL != "") {
+                indexer.addURL(dstIp, pp.httpData->hostURL);
+            }
+        }
+    }
+    else if (pp.tcpData->srcPort == 443 || pp.tcpData->dstPort == 443) {
+        if(tcpParser.isValid(rp)){
+            pp.protocol.append(" HTTPS");
+            pp.tlsData = tlsParser.parse(rp);
+
+            if(pp.tlsData && pp.tlsData->sniHeader.serverName != "") {
+                std::string srcIp =
+                    pp.IPv4Data ? pp.IPv4Data->srcIp : pp.IPv6Data->srcIp;
+                std::string dstIp =
+                    pp.IPv4Data ? pp.IPv4Data->dstIp : pp.IPv6Data->dstIp;
+
+                if (indexer.getURL(srcIp) != "") {
+                    pp.tlsData->sniHeader.serverName = indexer.getURL(srcIp);
+                } else {
+                    indexer.addURL(dstIp, pp.tlsData->sniHeader.serverName);
+                }
+            }
+        }
+    } else if (pp.udpData && (pp.udpData->srcPort == 53 || pp.udpData->dstPort == 53)) {
+        pp.protocol.append(" DNS");
+    }
 
     return pp;
 }

@@ -16,6 +16,8 @@ struct ParsedPacket {
     std::optional<TCPHeader> tcpData;   ///< Present only if TCP
     std::optional<UDPHeader> udpData;   ///< Present only if UDP
     std::optional<HTTPHeader> httpData; ///< Present only if HTTP
+    
+    std::optional<TLSHeader> tlsData;   ///< Present only if TLS
 
     std::string protocol; ///< Human readable protocol: "TCP", "UDP", etc.
     bool valid = false;   ///< True if packet has been parsed correctly

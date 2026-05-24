@@ -3,12 +3,10 @@
 #include <iostream>
 
 void Printer::printPacket(ParsedPacket packet) {
-    // Only print HTTP packets for now
-    /*
-    if(packet.protocol.find("HTTP") == std::string::npos) {
+    // Only print TLS handshakes
+    if (!packet.tlsData.has_value() || !packet.tlsData->isHandshake) {
         return;
     }
-    */
 
     if (!packet.valid) {
         std::cout << "[-] Invalid or malformed packet captured.\n";
@@ -37,10 +35,18 @@ void Printer::printPacket(ParsedPacket packet) {
         std::cout << "    [TCP]  Port " << packet.tcpData->srcPort << " -> "
                   << packet.tcpData->dstPort << " (Flags: 0x" << std::hex
                   << (int)packet.tcpData->flags << std::dec << ")\n";
-        if (packet.protocol.find("HTTP") != std::string::npos) {
+        
+        if (packet.httpData.has_value()) {
             // Print HTTP details
-            std::cout << "    [HTTP]" << " URL: " << packet.httpData->hostURL
-                      << "\n";
+            std::cout << "    [HTTP]" << " URL: " << packet.httpData->hostURL << "\n";
+        }
+        
+        else if (packet.tlsData.has_value()) {
+            // Print TLS details
+            std::cout << "    [TLS] " << "Version: " << packet.tlsData->recordHeader.versionStr << "\n";
+            if(packet.tlsData->sniHeader.serverName != "") {
+                std::cout << "    [TLS] " << "URL: " << packet.tlsData->sniHeader.serverName << "\n";
+            }
         }
     } else if (packet.udpData.has_value()) {
         std::cout << "    [UDP]  Port " << packet.udpData->srcPort << " -> "
