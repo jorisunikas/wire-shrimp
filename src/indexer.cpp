@@ -14,9 +14,8 @@ std::string trim(std::string str) {
 std::unordered_map<std::string, std::string> Indexer::ipMap;
 
 void Indexer::addURL(std::string ip, std::string url) {
-    std::cout << "---\n"  
-              << "Adding URL to indexer: " << ip << " -> " << url << "\n"
-              << "---\n";
+    std::cout << "Adding URL to indexer: " << ip << " -> " << url << "\n"
+              << "--------------------------------------------------\n";
     ipMap[trim(ip)] = trim(url);
 }
 

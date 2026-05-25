@@ -3,11 +3,6 @@
 #include <iostream>
 
 void Printer::printPacket(ParsedPacket packet) {
-    // Only print TLS handshakes
-    if (!packet.tlsData.has_value() || !packet.tlsData->isHandshake) {
-        return;
-    }
-
     if (!packet.valid) {
         std::cout << "[-] Invalid or malformed packet captured.\n";
         std::cout << "--------------------------------------------------\n";
