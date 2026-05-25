@@ -73,10 +73,12 @@ void Receiver::onPacket(pcpp::RawPacket *rawPacket) {
         Parser::parse({rawPacket->getRawData(),
                        static_cast<size_t>(rawPacket->getRawDataLen())});
     Printer::printPacket(pp);
+    stats.add(pp);
 
     currentPacketCount++;
     if (config.count > 0 && currentPacketCount >= config.count) {
         active = false;
+        std::cout << stats.getReport();
         std::cout << "Reached target packet count: " << config.count << "\n";
     }
     if (config.timeout > 0) {
@@ -85,6 +87,7 @@ void Receiver::onPacket(pcpp::RawPacket *rawPacket) {
             std::chrono::duration_cast<std::chrono::seconds>(elapsed).count();
         if (seconds >= config.timeout) {
             active = false;
+            std::cout << stats.getReport();
             std::cout << "Reached timeout: " << config.timeout << "s\n";
         }
     }

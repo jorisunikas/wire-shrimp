@@ -1,5 +1,6 @@
 #pragma once
 #include "data_types/config.hpp"
+#include "statistics.hpp"
 
 #include <PcapFilter.h>
 #include <PcapLiveDevice.h>
@@ -14,6 +15,7 @@ class Receiver {
     int currentPacketCount;
     std::chrono::steady_clock::time_point startTime;
     bool active;
+    Statistics stats;
 
     // Static callback for PcapPlusPlus
     static void onPacketArrives(pcpp::RawPacket *packet,
