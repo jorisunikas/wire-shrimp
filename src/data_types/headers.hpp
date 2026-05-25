@@ -9,6 +9,8 @@ static constexpr uint8_t TCP_MIN_HEADER_SIZE = 20;
 static constexpr uint8_t UDP_MIN_HEADER_SIZE = 8;
 static constexpr uint8_t IPV6_MIN_HEADER_SIZE = 40;
 static constexpr uint8_t TLS_MIN_HEADER_SIZE = 5;
+static constexpr uint8_t HTTP_MIN_HEADER_SIZE = 4; 
+static constexpr uint8_t DNS_MIN_HEADER_SIZE = 12;
 
 struct Header{  
     virtual ~Header() = default;
@@ -92,4 +94,16 @@ struct TLSHeader : Header {
     TLSSniHeader sniHeader;
     std::string hostURL; // Extracted from SNI or HTTP Host header for easier filtering
     bool isHandshake = false;
+};
+
+struct DNSHeader : Header {
+    uint16_t transactionID;
+    uint16_t flags;
+    uint16_t questionCount;
+    uint16_t answerCount;
+    uint16_t authorityCount;
+    uint16_t additionalCount;
+
+    std::string queryName; 
+    uint16_t queryType;
 };

@@ -16,6 +16,7 @@ struct ParsedPacket {
     std::optional<TCPHeader> tcpData;   ///< Present only if TCP
     std::optional<UDPHeader> udpData;   ///< Present only if UDP
     std::optional<HTTPHeader> httpData; ///< Present only if HTTP
+    std::optional<DNSHeader> dnsData;   ///< Present only if DNS
     
     std::optional<TLSHeader> tlsData;   ///< Present only if TLS
 

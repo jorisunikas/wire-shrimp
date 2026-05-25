@@ -46,6 +46,10 @@ void Printer::printPacket(ParsedPacket packet) {
     } else if (packet.udpData.has_value()) {
         std::cout << "    [UDP]  Port " << packet.udpData->srcPort << " -> "
                   << packet.udpData->dstPort << "\n";
+
+        if(packet.dnsData.has_value()) {
+            std::cout << "    [DNS]  Query: " << packet.dnsData->queryName << "\n";
+        }
     }
 
     std::cout << "--------------------------------------------------\n";
