@@ -96,7 +96,7 @@ ParsedPacket Parser::parse(RawPacket rp) {
             pp.protocol.append(" HTTPS");
             pp.tlsData = tlsParser.parse(rp);
 
-            if(pp.tlsData && pp.tlsData->sniHeader.serverName != "") {
+            if(pp.tlsData) {
                 std::string srcIp =
                     pp.IPv4Data ? pp.IPv4Data->srcIp : pp.IPv6Data->srcIp;
                 std::string dstIp =
@@ -104,7 +104,8 @@ ParsedPacket Parser::parse(RawPacket rp) {
 
                 if (indexer.getURL(srcIp) != "") {
                     pp.tlsData->sniHeader.serverName = indexer.getURL(srcIp);
-                } else {
+                }
+                else if(pp.tlsData->sniHeader.serverName != "") {
                     indexer.addURL(dstIp, pp.tlsData->sniHeader.serverName);
                 }
             }
