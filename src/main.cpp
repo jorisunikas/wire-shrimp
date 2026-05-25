@@ -55,6 +55,11 @@ int main(int argc, char *argv[]) {
         }
     }
 
+    // sets default if no parameters are given
+    if (config.count == 0 && config.timeout == 0) {
+        config.count = 100;
+    }
+
     if (config.interface.empty()) {
         std::cerr << "Error: -i <interface> is required\n";
         printHelp(argv[0]);
