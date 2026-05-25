@@ -12,4 +12,5 @@ public:
 private:
     int totalPackets = 0;
     std::unordered_map<std::string, int> protocolCounts;
+    std::unordered_map<std::string, int> urlCounts;
 };
