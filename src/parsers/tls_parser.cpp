@@ -16,8 +16,6 @@ TLSHeader TLSParser::parse(RawPacket& rp) {
     const uint8_t *data = tcp_packet + tcp_header_len;
     size_t len = rp.len - ETHERNET_HEADER_SIZE - ip_header_len - tcp_header_len;
 
-    if (len < 5) return header; // Not enough data for Record Header
-
     header.recordHeader.contentType = data[0];
     header.recordHeader.version = (data[1] << 8) | data[2];
     
