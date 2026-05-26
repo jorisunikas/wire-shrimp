@@ -1,25 +1,25 @@
 # wire-shrimp
 
-`wire-shrimp` is a WIP simple command-line tool designed for quick network packet capture and analysis. 
+`wire-shrimp` is a WIP simple command-line tool designed for quick network packet capture and analysis.
 
 ## Features
 
- - Ability to select specific network interfaces to monitor (-i).
- - Ability to limit the number of packets captured per session (-n).
- - Ability to set a capture timeout in seconds (-t).
- - Ability to apply BPF capture filters (-f).
- - Displays configuration details for the selected network interface.
- - Parses and analyzes all layers of the network protocol to some extent (Including HTTP, HTTPS, DNS on IPv4 and protocol identification on IPv6)
- - Extracts and indexes host URLs from HTTP Host headers and TLS SNI fields.
- - Displays a per-protocol and per-URL statistics report after capture.
- - Uses PcapPlusPlus library for compatibility.
+- Ability to select specific network interfaces to monitor (-i).
+- Ability to limit the number of packets captured per session (-n).
+- Ability to set a capture timeout in seconds (-t).
+- Ability to apply BPF capture filters (-f).
+- Displays configuration details for the selected network interface.
+- Parses and analyzes all layers of the network protocol to some extent. Including HTTP, HTTPS, DNS on IPv4 and protocol identification on IPv6)
+- Extracts and indexes host URLs from HTTP Host headers and TLS SNI fields.
+- Displays a per-protocol and per-URL statistics report after capture.
+- Uses PcapPlusPlus library for compatibility.
 
 ## Building
 
 *Requirements*:
 
- - [CMake](https://cmake.org/)
- - [libpcap](https://www.tcpdump.org/)
+- [CMake](https://cmake.org/)
+- [libpcap](https://www.tcpdump.org/)
 
 To run the project (from project root):
 
@@ -31,8 +31,7 @@ Then executable will subsequently be found in `/build/wire-shrimp`. To run:
 
 > [!NOTE]
 > Super-user privileges are required to access a network interface.
-
-> [!NOTE] 
+> [!NOTE]
 > PcapPlusPlus library is automatically downloaded upon first `make` call.
 
 ## Implemented design patterns
@@ -248,6 +247,7 @@ flowchart TD
 ```
 
 ### Activity
+
 <img src="uml/uml_activity.png"/>
 
 ## Grading
