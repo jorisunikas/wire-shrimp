@@ -9,6 +9,8 @@
 
 Receiver::Receiver(Config cfg) {
     config = cfg;
+    Printer::init(config);
+
     device = pcpp::PcapLiveDeviceList::getInstance().getDeviceByIpOrName(
         config.interface);
 
@@ -25,7 +27,10 @@ Receiver::Receiver(Config cfg) {
     Printer::printInterface(device);
 }
 
-Receiver::~Receiver() { device->close(); }
+Receiver::~Receiver() {
+    device->close();
+    Printer::cleanup();
+}
 
 // --- START / STOP ---
 
@@ -36,7 +41,7 @@ void Receiver::start() {
         return;
     }
 
-    std::cout << "Starting capture on " << device->getName() << "..." << "\n";
+    std::cout << "Starting capture on " << device->getName() << "...\n";
 
     startTime = std::chrono::steady_clock::now();
     currentPacketCount = 0;
@@ -51,10 +56,10 @@ void Receiver::start() {
 void Receiver::stop() {
     if (device != nullptr) {
         device->stopCapture();
-        std::cout << "Capture stopped." << "\n";
+        std::cout << "Capture stopped.\n";
 
         Printer::printTitle("Capture Report");
-        std::cout << stats.getReport();
+        Printer::out() << stats.getReport();
     }
 }
 
@@ -76,13 +81,13 @@ void Receiver::onPacket(pcpp::RawPacket *rawPacket) {
     ParsedPacket pp =
         Parser::parse({rawPacket->getRawData(),
                        static_cast<size_t>(rawPacket->getRawDataLen())});
-    Printer::printPacket(pp);
+    Printer::printPacket(pp, config.verbose);
     stats.add(pp);
-    
+
     // CHECK STOP CONDITIONS
     currentPacketCount++;
     if (config.count > 0 && currentPacketCount >= config.count) {
-        std::cout << "Reached target packet count: " << config.count << "\n";
+        Printer::out() << "Reached target packet count: " << config.count << "\n";
         active = false;
     }
     if (config.timeout > 0) {
@@ -90,7 +95,7 @@ void Receiver::onPacket(pcpp::RawPacket *rawPacket) {
         auto seconds =
             std::chrono::duration_cast<std::chrono::seconds>(elapsed).count();
         if (seconds >= config.timeout) {
-            std::cout << "Reached timeout: " << config.timeout << "s\n";
+            Printer::out() << "Reached timeout: " << config.timeout << "s\n";
             active = false;
         }
     }

@@ -1,9 +1,6 @@
 #include "indexer.hpp"
+#include "printer.hpp"
 
-#include <iostream>
-
-//#include <bits/stdc++.h>
-//
 std::string trim(std::string str) {
 	const char* typeOfWhitespaces = " \t\n\r\f\v";
 	str.erase(str.find_last_not_of(typeOfWhitespaces) + 1);
@@ -14,7 +11,7 @@ std::string trim(std::string str) {
 std::unordered_map<std::string, std::string> Indexer::ipMap;
 
 void Indexer::addURL(std::string ip, std::string url) {
-    std::cout << "Adding URL to indexer: " << ip << " -> " << url << "\n"
+    Printer::out() << "Adding URL to indexer: " << ip << " -> " << url << "\n"
               << "--------------------------------------------------\n";
     ipMap[trim(ip)] = trim(url);
 }

@@ -16,6 +16,10 @@ void printHelp(const char *name) {
                  "(default: unused, capture stops on packet count)\n"
               << "  -f, --filter=<filter>   BPF filter string (e.g. \"tcp\", "
                  "\"port 80\")\n"
+              << "  -v, --verbose           Show full packet details "
+                 "(default: compact one-liner)\n"
+              << "  -o, --output=<file>     Write all output to file "
+                 "(default: stdout)\n"
               << "  -h, --help              Prints this message\n";
 }
 
@@ -27,12 +31,14 @@ int main(int argc, char *argv[]) {
         {"time", required_argument, 0, 't'},
         {"count", required_argument, 0, 'n'},
         {"filter", required_argument, 0, 'f'},
+        {"verbose", no_argument, 0, 'v'},
+        {"output", required_argument, 0, 'o'},
         {"help", no_argument, 0, 'h'},
         {0, 0, 0, 0}};
 
     int opt;
-    while ((opt = getopt_long(argc, argv, "i:n:f:t:h", long_opts, nullptr)) !=
-           -1) {
+    while ((opt = getopt_long(argc, argv, "i:n:f:t:v:o:h", long_opts,
+                              nullptr)) != -1) {
         switch (opt) {
         case 'i':
             config.interface = optarg;
@@ -45,6 +51,12 @@ int main(int argc, char *argv[]) {
             break;
         case 't':
             config.timeout = std::stoi(optarg);
+            break;
+        case 'v':
+            config.verbose = true;
+            break;
+        case 'o':
+            config.outputFile = optarg;
             break;
         case 'h':
             printHelp(argv[0]);
