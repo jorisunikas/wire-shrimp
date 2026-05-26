@@ -77,3 +77,7 @@ void Printer::printInterface(pcpp::PcapLiveDevice *interface) {
 
     std::cout << "=============================\n\n";
 }
+
+void Printer::printTitle(std::string title) {
+    std::cout << "\n===== " << title << " =====\n";
+}
