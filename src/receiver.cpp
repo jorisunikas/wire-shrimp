@@ -52,6 +52,9 @@ void Receiver::stop() {
     if (device != nullptr) {
         device->stopCapture();
         std::cout << "Capture stopped." << "\n";
+
+        Printer::printTitle("Capture Report");
+        std::cout << stats.getReport();
     }
 }
 
@@ -69,26 +72,26 @@ void Receiver::onPacket(pcpp::RawPacket *rawPacket) {
     if (!active)
         return;
 
+    // PACKET HANDLING
     ParsedPacket pp =
         Parser::parse({rawPacket->getRawData(),
                        static_cast<size_t>(rawPacket->getRawDataLen())});
     Printer::printPacket(pp);
     stats.add(pp);
-
+    
+    // CHECK STOP CONDITIONS
     currentPacketCount++;
     if (config.count > 0 && currentPacketCount >= config.count) {
-        active = false;
-        std::cout << stats.getReport();
         std::cout << "Reached target packet count: " << config.count << "\n";
+        active = false;
     }
     if (config.timeout > 0) {
         auto elapsed = std::chrono::steady_clock::now() - startTime;
         auto seconds =
             std::chrono::duration_cast<std::chrono::seconds>(elapsed).count();
         if (seconds >= config.timeout) {
-            active = false;
-            std::cout << stats.getReport();
             std::cout << "Reached timeout: " << config.timeout << "s\n";
+            active = false;
         }
     }
 }
