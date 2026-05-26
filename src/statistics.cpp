@@ -8,10 +8,10 @@ void Statistics::add(const ParsedPacket &pp) {
 
     if(pp.httpData && pp.httpData->hostURL != "") {
         urlCounts[pp.httpData->hostURL]++;
-    } 
+    }
     else if (pp.tlsData && pp.tlsData->sniHeader.serverName != "") {
         urlCounts[pp.tlsData->sniHeader.serverName]++;
-    } 
+    }
     else if (pp.dnsData && pp.dnsData->queryName != "") {
         urlCounts[pp.dnsData->queryName]++;
     }
