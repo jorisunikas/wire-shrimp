@@ -30,25 +30,31 @@ void Printer::printPacket(ParsedPacket packet) {
         std::cout << "    [TCP]  Port " << packet.tcpData->srcPort << " -> "
                   << packet.tcpData->dstPort << " (Flags: 0x" << std::hex
                   << (int)packet.tcpData->flags << std::dec << ")\n";
-        
+
         if (packet.httpData.has_value()) {
             // Print HTTP details
-            std::cout << "    [HTTP]" << " URL: " << packet.httpData->hostURL << "\n";
+            std::cout << "    [HTTP]" << " URL: " << packet.httpData->hostURL
+                      << "\n";
         }
-        
+
         else if (packet.tlsData.has_value()) {
             // Print TLS details
-            std::cout << "    [TLS] " << "Version: " << packet.tlsData->recordHeader.versionStr << "\n";
-            if(packet.tlsData->sniHeader.serverName != "") {
-                std::cout << "    [TLS] " << "URL: " << packet.tlsData->sniHeader.serverName << "\n";
+            std::cout << "    [TLS] "
+                      << "Version: " << packet.tlsData->recordHeader.versionStr
+                      << "\n";
+            if (packet.tlsData->sniHeader.serverName != "") {
+                std::cout << "    [TLS] "
+                          << "URL: " << packet.tlsData->sniHeader.serverName
+                          << "\n";
             }
         }
     } else if (packet.udpData.has_value()) {
         std::cout << "    [UDP]  Port " << packet.udpData->srcPort << " -> "
                   << packet.udpData->dstPort << "\n";
 
-        if(packet.dnsData.has_value()) {
-            std::cout << "    [DNS]  Query: " << packet.dnsData->queryName << "\n";
+        if (packet.dnsData.has_value()) {
+            std::cout << "    [DNS]  Query: " << packet.dnsData->queryName
+                      << "\n";
         }
     }
 

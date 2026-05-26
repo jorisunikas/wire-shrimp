@@ -5,11 +5,11 @@
 #include <unordered_map>
 
 class Statistics {
-public:
+  public:
     void add(const ParsedPacket &pp);
     std::string getReport() const;
 
-private:
+  private:
     int totalPackets = 0;
     std::unordered_map<std::string, int> protocolCounts;
     std::unordered_map<std::string, int> urlCounts;

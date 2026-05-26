@@ -4,14 +4,14 @@
  * Manages the url and ip addresser as memory
  */
 
-#include <unordered_map>
 #include <string>
+#include <unordered_map>
 
 class Indexer {
-protected:
+  protected:
     static std::unordered_map<std::string, std::string> ipMap;
 
-public:
+  public:
     void addURL(std::string ip, std::string url);
     std::string getURL(std::string ip);
 };
