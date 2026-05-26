@@ -34,8 +34,6 @@ Then executable will subsequently be found in `/build/wire-shrimp`. To run:
 > [!NOTE]
 > PcapPlusPlus library is automatically downloaded upon first `make` call.
 
-## Implemented design patterns
-
 ## Design Patterns
 
 ### Strategy
@@ -232,14 +230,14 @@ flowchart TD
 
     %% Data Flows (Arrows)
     User -- "Command: wire-shrimp -n 100 -i <interface>" --> P1
-    
+
     P1 -- "Interface Target" --> P2
     P2 -- "Interface Details" --> User
-    
+
     P1 -- "Parameters: Count, Timeout, Filter & Interface" --> P3
     P3 -- "Listen/Sniff Request" --> Network
     Network -- "Raw Packets" --> P3
-    
+
     P3 -- "Collected Raw Packets" --> P4
     P4 -- "Parsed Packet Info\n(Protocol, IPv4/IPv6, HTTP/TLS/DNS, etc.)" --> User
     P4 -- "Packet Metadata" --> P5
@@ -257,7 +255,6 @@ flowchart TD
 ## Roadmap
 
 - Parsing additional application-layer protocols (QUIC, DHCP, etc.).
-- Packet export to a file format.
 - Interactive TUI for live packet browsing.
 - Suspicious packet detection
 
